@@ -617,14 +617,16 @@
             
             // 1. Update Status Display
             statusText.textContent = data.statusText;
-            statusText.classList.toggle('text-green-500', data.statusText.includes('accessible') || data.statusText.includes('active') || data.statusText.includes('Bypassed'));
-            statusText.classList.toggle('text-red-500', !data.statusText.includes('accessible') && !data.statusText.includes('active') && !data.statusText.includes('Bypassed'));
+            // Updated color logic to reflect 'Available' wording
+            const isShopAvailable = data.statusText.includes('Available') || data.statusText.includes('Bypassed') || data.statusText.includes('Live');
+            statusText.classList.toggle('text-green-500', isShopAvailable);
+            statusText.classList.toggle('text-red-500', !isShopAvailable);
+
             lastChecked.textContent = data.lastChecked;
             statusDetails.textContent = data.statusDetails;
             
             // 2. SMOOTH TIMER UPDATE
             if (data.isRunning) {
-                // The worker's startTime is stored as milliseconds, which is what Date.now() returns
                 workerStartTime = data.startTime; 
                 startLocalTimer(); 
             } else {
