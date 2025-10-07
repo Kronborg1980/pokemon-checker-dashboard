@@ -386,7 +386,7 @@
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+<body>
   <div class="main-container">
     <div class="header">
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png" alt="Magikarp" class="pokemon-header-sprite magikarp-header">
@@ -423,6 +423,7 @@
       </div>
       <div id="webhookFeedback" class="status-feedback"></div>
     </div>
+    
     <div class="section">
       <label>Check every: <span id="frequencyValue" class="font-semibold">10</span> minutes</label>
       <div class="frequency-range">
@@ -480,7 +481,7 @@
     } else {
       // NOTE: You must set your public key here for email alerts to work from the dashboard.
       emailjs.init({
-        publicKey: "8w7eu6mrg3lRl6ta3" // <-- Replace with your actual EmailJS Public Key
+        publicKey: "8w7eu6mrg3lRl6ta3" 
       });
     }
 
@@ -521,9 +522,13 @@
     // Local State (Synced with Worker KV)
     let emailNotificationsEnabled = true;
     let discordNotificationsEnabled = false;
-    let currentWebhooks = []; // Now an array
+    let currentWebhooks = []; 
     let currentEmails = [];
     let currentFrequency = 10;
+    
+    // SMOOTH TIMER VARIABLES
+    let localTimerInterval = null;
+    let workerStartTime = null; 
 
     function log(message) {
         const timestamp = new Date().toLocaleTimeString();
@@ -539,7 +544,6 @@
     
     function updateNoWebhooksMessage() {
         noWebhooksMessage.classList.toggle('show', submittedWebhooksList.children.length === 0);
-        // Also update toggle button visibility based on whether any webhooks exist
         if (submittedWebhooksList.children.length > 0) {
             webhookToggleButton.classList.remove('hidden');
         } else {
@@ -564,6 +568,32 @@
         return `${hours}h ${minutes}m ${secs}s`;
     }
 
+    // --- SMOOTH TIMER LOGIC ---
+    function updateSmoothRunTime() {
+        if (workerStartTime) {
+            const elapsed = Date.now() - workerStartTime;
+            runTime.textContent = formatDuration(elapsed);
+        }
+    }
+
+    function startLocalTimer() {
+        if (!localTimerInterval) {
+            // Update the display every 1 second
+            localTimerInterval = setInterval(updateSmoothRunTime, 1000);
+        }
+    }
+
+    function stopLocalTimer() {
+        if (localTimerInterval) {
+            clearInterval(localTimerInterval);
+            localTimerInterval = null;
+        }
+        workerStartTime = null;
+        runTime.textContent = '0h 0m 0s';
+    }
+    // --- END SMOOTH TIMER LOGIC ---
+
+
     // --- API Interaction Functions ---
 
     async function fetchStatus() {
@@ -579,9 +609,17 @@
             statusText.classList.toggle('text-red-500', !data.statusText.includes('accessible') && !data.statusText.includes('active') && !data.statusText.includes('Bypassed'));
             lastChecked.textContent = data.lastChecked;
             statusDetails.textContent = data.statusDetails;
-            runTime.textContent = data.runTime || '0h 0m 0s';
+            
+            // 2. SMOOTH TIMER UPDATE
+            if (data.isRunning) {
+                // The worker's startTime is stored as milliseconds, which is what Date.now() returns
+                workerStartTime = data.startTime; 
+                startLocalTimer(); 
+            } else {
+                stopLocalTimer();
+            }
 
-            // 2. Update Run Control Buttons
+            // 3. Update Run Control Buttons
             if (data.isRunning) {
                 startButton.classList.add('hidden');
                 stopButton.classList.remove('hidden');
@@ -590,7 +628,7 @@
                 stopButton.classList.add('hidden');
             }
 
-            // 3. Update Live Log
+            // 4. Update Live Log
             liveLog.innerHTML = '';
             data.log.reverse().forEach(entry => {
                 const logEntry = document.createElement('p');
@@ -598,14 +636,14 @@
                 liveLog.appendChild(logEntry);
             });
             
-            // 4. Update Settings UI (Sync from Worker KV)
+            // 5. Update Settings UI (Sync from Worker KV)
             const settings = data.settings || {};
             
             // Emails
             currentEmails = settings.emails || [];
             updateEmailListUI(currentEmails);
 
-            // Discord Webhooks (Updated for array)
+            // Discord Webhooks
             currentWebhooks = settings.discordWebhooks || [];
             discordNotificationsEnabled = settings.discordNotificationsEnabled === true;
             updateWebhookListUI(currentWebhooks);
@@ -642,6 +680,7 @@
             log(`Error connecting to Worker: ${error.message}. Check Worker URL and status.`);
             statusText.textContent = 'Worker Disconnected';
             statusText.classList.add('text-red-500');
+            stopLocalTimer();
         }
     }
 
@@ -661,10 +700,9 @@
     }
 
     async function saveSettings(settingsUpdate) {
-        // Collect all local state before saving
         const settings = {
             emails: currentEmails,
-            discordWebhooks: currentWebhooks, // Now saving the array
+            discordWebhooks: currentWebhooks,
             discordNotificationsEnabled: discordNotificationsEnabled,
             emailNotificationsEnabled: emailNotificationsEnabled,
             frequency: parseInt(frequencySlider.value),
@@ -702,7 +740,6 @@
             return;
         }
         
-        // Deactivate alert after sending
         await saveSettings({ emailNotificationsEnabled: false });
 
         recipientEmails.forEach(email => {
@@ -710,7 +747,7 @@
                 log(`Invalid email address: ${email}. Skipping.`);
                 return;
             }
-            emailjs.send("service_ahqdaj5", "template_whhvnra", {
+            emailjs.send("service_ahqdaj5", "template_whhvnra", { 
                 status: status,
                 details: details,
                 timestamp: new Date().toLocaleString(),
@@ -775,7 +812,6 @@
         webhooks.forEach(webhook => {
             if (!webhook) return;
             const li = document.createElement('li');
-            // Display only the first part of the webhook URL for security and space
             const displayUrl = webhook.substring(0, 30) + '...';
             li.innerHTML = `
                 <span>${displayUrl}</span>
@@ -800,7 +836,8 @@
     document.addEventListener('DOMContentLoaded', async () => {
         // 1. Initial Status Fetch and Start Polling
         await fetchStatus();
-        setInterval(fetchStatus, 5000); // Poll every 5 seconds
+        setInterval(fetchStatus, 5000); // Poll every 5 seconds for status data
+        // NOTE: The smooth timer starts inside fetchStatus() if the Worker is running
 
         // 2. Email Submission
         const initialInputGroup = emailInputsContainer.querySelector('.email-input-group');
@@ -828,7 +865,7 @@
             }
         });
         
-        // 3. Webhook Submission (New Logic)
+        // 3. Webhook Submission
         submitWebhookButton.addEventListener('click', async function() {
             const webhook = webhookInput.value.trim();
             if (!webhook || !webhook.startsWith('http')) {
