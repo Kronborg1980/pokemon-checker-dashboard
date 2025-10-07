@@ -249,6 +249,7 @@
       padding: 0;
       margin: 0;
     }
+    /* === BLINKING FIX: Removed the animation property from these two list items === */
     .submitted-emails-list li, .submitted-webhooks-list li {
       display: flex;
       align-items: center;
@@ -259,9 +260,11 @@
       border: 1px solid #00ffff;
       border-radius: 4px;
       box-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
-      animation: fadeIn 0.2s ease-in;
+      /* animation: fadeIn 0.2s ease-in; <-- THIS LINE WAS REMOVED */
       word-break: break-word;
     }
+    /* === BLINKING FIX END === */
+
     .submitted-emails-list li span, .submitted-webhooks-list li span {
       flex: 1;
       font-size: 0.875rem;
