@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pokémon Center Shop Access Checker</title>
+  <link rel="icon" type="image/png" href="favicon.png">
   <style>
     /* Tailwind-like utility classes */
     .bg-gray-100 { background-color: #f3f4f6; }
@@ -674,7 +675,7 @@
                     if (!isNaN(date.getTime())) {
                         lastChecked.textContent = date.toLocaleTimeString(undefined, BROWSER_TIME_OPTIONS);
                     } else {
-                        // If parsing failed, show the raw string and a warning
+                        // If parsing failed (shouldn't happen with ISO string), show the raw string and a warning
                          lastChecked.textContent = data.lastChecked + " (Time Zone Sync Error)";
                     }
                 } catch (e) {
