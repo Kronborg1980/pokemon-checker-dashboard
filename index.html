@@ -670,8 +670,13 @@
             if (data.lastChecked && data.lastChecked !== 'Never') {
                 try {
                     const date = new Date(data.lastChecked);
-                    // Use browser's locale (undefined) and force 24h + timezone abbreviation
-                    lastChecked.textContent = date.toLocaleTimeString(undefined, BROWSER_TIME_OPTIONS);
+                    // Check if date is valid before displaying
+                    if (!isNaN(date.getTime())) {
+                        lastChecked.textContent = date.toLocaleTimeString(undefined, BROWSER_TIME_OPTIONS);
+                    } else {
+                        // If parsing failed, show the raw string and a warning
+                         lastChecked.textContent = data.lastChecked + " (Time Zone Sync Error)";
+                    }
                 } catch (e) {
                     lastChecked.textContent = data.lastChecked + " (Time Error)";
                     console.error("Failed to parse date from worker:", e);
@@ -729,18 +734,6 @@
                 webhookToggleButton.textContent = 'Activate Discord Alerts';
                 webhookToggleButton.classList.remove('active');
                 webhookToggleButton.classList.add('inactive');
-            }
-
-            // Email Toggle
-            emailNotificationsEnabled = settings.emailNotificationsEnabled === true;
-            if (emailNotificationsEnabled) {
-                emailToggleButton.textContent = 'Deactivate Email Alerts';
-                emailToggleButton.classList.remove('inactive');
-                emailToggleButton.classList.add('active');
-            } else {
-                emailToggleButton.textContent = 'Activate Email Alerts';
-                emailToggleButton.classList.remove('active');
-                emailToggleButton.classList.add('inactive');
             }
 
             // Frequency
