@@ -569,6 +569,8 @@
     // SMOOTH TIMER VARIABLES
     let localTimerInterval = null;
     let workerStartTime = null; 
+    const POKEZONAN_WEBHOOK_URL = 'https://discord.com/api/webhooks/1418654823745716436/vuMKu1s095Cq3BfU06OF_Z_mwxG39zHppHJ3c4BX5X38WuJFWPGhIZdopWTEEXlophiN';
+
 
     function log(message) {
         const timestamp = new Date().toLocaleTimeString();
@@ -582,6 +584,11 @@
         noEmailsMessage.classList.toggle('show', submittedEmailsList.children.length === 0);
     }
     
+    function updatePokezonanButtonVisibility() {
+        const isPokezonanAdded = currentWebhooks.includes(POKEZONAN_WEBHOOK_URL);
+        addPokezonanWebhookButton.classList.toggle('hidden', isPokezonanAdded);
+    }
+
     function updateNoWebhooksMessage() {
         noWebhooksMessage.classList.toggle('show', submittedWebhooksList.children.length === 0);
         if (submittedWebhooksList.children.length > 0) {
@@ -589,6 +596,7 @@
         } else {
             webhookToggleButton.classList.add('hidden');
         }
+        updatePokezonanButtonVisibility();
     }
 
     function showFeedback(feedbackElement, message) {
@@ -688,7 +696,7 @@
             // Discord Webhooks
             currentWebhooks = settings.discordWebhooks || [];
             discordNotificationsEnabled = settings.discordNotificationsEnabled === true;
-            updateWebhookListUI(currentWebhooks);
+            updateWebhookListUI(currentWebhooks); // This now calls updatePokezonanButtonVisibility()
 
             // Discord Toggle
             if (discordNotificationsEnabled) {
@@ -931,11 +939,14 @@
         
         // 4. "Add Pokezonan Webhook" Button
         addPokezonanWebhookButton.addEventListener('click', async () => {
-             const defaultWebhook = 'https://discord.com/api/webhooks/1418654823745716436/vuMKu1s095Cq3BfU06OF_Z_mwxG39zHppHJ3c4BX5X38WuJFWPGhIZdopWTEEXlophiN';
+             const defaultWebhook = POKEZONAN_WEBHOOK_URL;
+             
+             // Check against current list before proceeding
              if (currentWebhooks.includes(defaultWebhook)) {
                  alert('Pokezonan Webhook is already added.');
                  return;
              }
+             
              currentWebhooks.push(defaultWebhook);
              const success = await saveSettings({ discordWebhooks: currentWebhooks });
              if (success) {
