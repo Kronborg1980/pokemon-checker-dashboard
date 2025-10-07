@@ -156,7 +156,7 @@
       box-shadow: 0 0 10px #00ffff;
     }
     
-    /* SLIDER FIX CSS START */
+    /* === SLIDER FIX CSS START === */
     .frequency-range {
         display: flex;
         padding: 0 5px;
@@ -193,7 +193,7 @@
         box-shadow: 0 0 8px #00ffff;
         border: none;
     }
-    /* SLIDER FIX CSS END */
+    /* === SLIDER FIX CSS END === */
 
     button {
       width: 100%;
@@ -316,11 +316,21 @@
       padding: 1rem;
       margin-bottom: 1rem;
       box-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
+      /* MOBILE WORD WRAP FIX: Ensure long text wraps correctly */
+      word-wrap: break-word; 
+      overflow-wrap: break-word;
     }
     .status-display p {
       margin: 0.25rem 0;
       font-size: 0.875rem;
     }
+    /* MOBILE WORD WRAP FIX: Ensure status details break long URLs/strings */
+    .status-display #statusDetails {
+        display: block; 
+        word-break: break-all;
+    }
+    /* MOBILE WORD WRAP FIX END */
+
     .live-log {
       flex: 1;
       /* LOG VIEW LIMIT FIX: Set max height and enable vertical scrolling */
@@ -394,6 +404,25 @@
       }
     }
     /* --- MOBILE OPTIMIZATION END --- */
+    .success-explosion {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0;
+    }
+    .success-explosion.show {
+      opacity: 1;
+      animation: explode 1s ease-out forwards;
+    }
+    @keyframes explode {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); opacity: 0; }
+    }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
 </head>
@@ -784,7 +813,6 @@
             return;
         }
         try {
-            // The worker uses its hardcoded humorous message
             const response = await fetch(`${WORKER_API_URL}/test_discord`, { method: 'POST' });
             if (response.ok) {
                 log('Discord test command sent to Worker.');
