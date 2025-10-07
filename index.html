@@ -422,7 +422,6 @@
   </audio>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script type="text/javascript">
-    // Placeholder functions from original script for compatibility if other scripts use them
     var gk_isXlsx = false;
     var gk_xlsxFileLookup = {};
     var gk_fileData = {};
@@ -430,7 +429,6 @@
       return cell !== '' && cell != null;
     }
     function loadFileData(filename) {
-      // Dummy implementation since logic is server-side now
       return gk_fileData[filename] || "";
     }
   </script>
@@ -447,8 +445,8 @@
 
     // --- New Client-Side Dashboard JS (Connects to Worker) ---
 
-    // **CRITICAL**: REPLACE THIS WITH YOUR DEPLOYED CLOUDFLARE WORKER URL
-    const WORKER_API_URL = 'https://pokemon-checker-api.kronborgnielsen.workers.dev/'; 
+    // **CRITICAL**: FINAL DEPLOYED CLOUDFLARE WORKER URL
+    const WORKER_API_URL = 'https://pokemon-checker-api.kronborgnielsen.workers.dev'; 
     
     // UI Elements
     const statusText = document.getElementById('statusText');
@@ -487,7 +485,7 @@
         const timestamp = new Date().toLocaleTimeString();
         const logEntry = document.createElement('p');
         logEntry.textContent = `[${timestamp}] ${message}`;
-        liveLog.prepend(logEntry); // Prepend for LIFO display
+        liveLog.prepend(logEntry);
         console.log(message);
     }
 
@@ -540,7 +538,7 @@
 
             // 3. Update Live Log
             liveLog.innerHTML = '';
-            data.log.reverse().forEach(entry => { // Worker logs are prepended, so reverse for FE display
+            data.log.reverse().forEach(entry => {
                 const logEntry = document.createElement('p');
                 logEntry.textContent = entry;
                 liveLog.appendChild(logEntry);
@@ -609,7 +607,7 @@
             });
             const data = await response.json();
             log(data.message);
-            await fetchStatus(); // Update UI immediately
+            await fetchStatus();
         } catch (error) {
             log(`Error controlling Worker: ${error.message}`);
         }
@@ -724,16 +722,14 @@
         updateNoEmailsMessage();
     }
 
-    // --- Event Listeners (Updated for API calls) ---
+    // --- Event Listeners ---
 
     document.addEventListener('DOMContentLoaded', async () => {
-        // 1. Initial Status Fetch
+        // 1. Initial Status Fetch and Start Polling
         await fetchStatus();
-        
-        // 2. Start Polling for Status
         setInterval(fetchStatus, 5000); // Poll every 5 seconds
 
-        // 3. Email Submission
+        // 2. Email Submission
         const initialInputGroup = emailInputsContainer.querySelector('.email-input-group');
         const initialInput = initialInputGroup.querySelector('.email-input');
         const submitButton = initialInputGroup.querySelector('.submit-email-button');
@@ -759,12 +755,12 @@
             }
         });
 
-        // 4. Start/Stop/Test Buttons
+        // 3. Start/Stop/Test Buttons
         startButton.addEventListener('click', () => controlWorker('start'));
         stopButton.addEventListener('click', () => controlWorker('stop'));
         testButton.addEventListener('click', () => controlWorker('test_check'));
 
-        // 5. Email/Discord Toggles
+        // 4. Email/Discord Toggles and Webhook Add
         emailToggleButton.addEventListener('click', async () => {
             const newState = !emailNotificationsEnabled;
             const success = await saveSettings({ emailNotificationsEnabled: newState });
@@ -796,7 +792,7 @@
             }
         });
         
-        // 6. Test Alert Buttons
+        // 5. Test Alert Buttons
         testEmailButton.addEventListener('click', () => {
             if (!currentEmails.length || !emailNotificationsEnabled) {
                 alert('Add/Activate email alerts first.');
@@ -828,7 +824,7 @@
             }
         });
         
-        // 7. Frequency Slider Update
+        // 6. Frequency Slider Update
         frequencySlider.addEventListener('input', function() {
             frequencyValue.textContent = this.value;
         });
@@ -837,7 +833,7 @@
              log(`Monitoring frequency setting updated to ${this.value} minutes.`);
         });
         
-        // 8. Auto-Redirect Warning
+        // 7. Auto-Redirect Warning
         autoRedirectCheckbox.addEventListener('click', () => {
             alert("Auto-redirect is disabled when running in 24/7 serverless mode, as the check happens on the server, not in your browser. The Worker will send an immediate alert instead.");
             autoRedirectCheckbox.checked = false; // Reset the checkbox
