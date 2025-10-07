@@ -256,7 +256,6 @@
       padding: 0.5rem;
       background: rgba(107, 114, 128, 0.5); /* Grayed-out background */
       border: 1px solid #00ffff;
-      border-radius: 4px;
       box-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
       word-break: break-word;
     }
@@ -570,10 +569,18 @@
     let localTimerInterval = null;
     let workerStartTime = null; 
     const POKEZONAN_WEBHOOK_URL = 'https://discord.com/api/webhooks/1418654823745716436/vuMKu1s095Cq3BfU06OF_Z_mwxG39zHppHJ3c4BX5X38WuJFWPGhIZdopWTEEXlophiN';
-
+    
+    // TIMEZONE OPTIONS for browser display
+    const BROWSER_TIME_OPTIONS = {
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit',
+        hour12: false,
+        timeZoneName: 'short' // Will display e.g., CEST, CST, GMT+8
+    };
 
     function log(message) {
-        const timestamp = new Date().toLocaleTimeString();
+        const timestamp = new Date().toLocaleTimeString(undefined, {hour: '2-digit', minute: '2-digit'}); // Keep log timestamp simple
         const logEntry = document.createElement('p');
         logEntry.textContent = `[${timestamp}] ${message}`;
         liveLog.prepend(logEntry);
@@ -658,10 +665,25 @@
             statusText.classList.toggle('text-green-500', isShopAvailable);
             statusText.classList.toggle('text-red-500', !isShopAvailable);
 
-            lastChecked.textContent = data.lastChecked;
-            statusDetails.textContent = data.statusDetails;
             
-            // 2. SMOOTH TIMER UPDATE
+            // 2. CONVERT ISO TIME TO BROWSER LOCAL TIME (The Fix)
+            if (data.lastChecked && data.lastChecked !== 'Never') {
+                try {
+                    const date = new Date(data.lastChecked);
+                    // Use browser's locale (undefined) and force 24h + timezone abbreviation
+                    lastChecked.textContent = date.toLocaleTimeString(undefined, BROWSER_TIME_OPTIONS);
+                } catch (e) {
+                    lastChecked.textContent = data.lastChecked + " (Time Error)";
+                    console.error("Failed to parse date from worker:", e);
+                }
+            } else {
+                lastChecked.textContent = data.lastChecked;
+            }
+            
+            statusDetails.textContent = data.statusDetails;
+
+            
+            // 3. SMOOTH TIMER UPDATE
             if (data.isRunning) {
                 workerStartTime = data.startTime; 
                 startLocalTimer(); 
@@ -669,7 +691,7 @@
                 stopLocalTimer();
             }
 
-            // 3. Update Run Control Buttons
+            // 4. Update Run Control Buttons
             if (data.isRunning) {
                 startButton.classList.add('hidden');
                 stopButton.classList.remove('hidden');
@@ -678,7 +700,7 @@
                 stopButton.classList.add('hidden');
             }
 
-            // 4. Update Live Log
+            // 5. Update Live Log
             liveLog.innerHTML = '';
             data.log.reverse().forEach(entry => {
                 const logEntry = document.createElement('p');
@@ -686,7 +708,7 @@
                 liveLog.appendChild(logEntry);
             });
             
-            // 5. Update Settings UI (Sync from Worker KV)
+            // 6. Update Settings UI (Sync from Worker KV)
             const settings = data.settings || {};
             
             // Emails
@@ -696,7 +718,7 @@
             // Discord Webhooks
             currentWebhooks = settings.discordWebhooks || [];
             discordNotificationsEnabled = settings.discordNotificationsEnabled === true;
-            updateWebhookListUI(currentWebhooks); // This now calls updatePokezonanButtonVisibility()
+            updateWebhookListUI(currentWebhooks);
 
             // Discord Toggle
             if (discordNotificationsEnabled) {
