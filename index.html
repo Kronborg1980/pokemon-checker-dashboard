@@ -10,7 +10,6 @@
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="shortcut icon" href="favicon.png">
   <style>
-    /* Tailwind-like utility classes */
     .bg-gray-100 { background-color: #f3f4f6; }
     .bg-white { background-color: #ffffff; }
     .bg-blue-500 { background-color: #3b82f6; }
@@ -52,7 +51,6 @@
     .hover\:bg-green-600:hover { background-color: #059669; }
     .hover\:bg-purple-600:hover { background-color: #7c3aed; }
     .hover\:bg-gray-600:hover { background-color: #4b5563; }
-    /* Professional Tron-like Theme */
     body {
       font-family: 'Nunito', sans-serif;
       background: linear-gradient(to bottom, #0a0a0a, #1a1a2e, #16213e, #0f3460);
@@ -470,6 +468,7 @@
     </div>
     <div class="status-display">
       <p><strong>Status:</strong> <span id="statusText">Waiting...</span></p>
+      <p><strong>Previous Status:</strong> <span id="previousStatusText">None</span></p>
       <p><strong>Last checked:</strong> <span id="lastChecked">Never</span></p>
       <p><strong>Running for:</strong> <span id="runTime">0h 0m 0s</span></p>
       <p><strong>Details:</strong> <span id="statusDetails">None</span></p>
@@ -506,6 +505,7 @@
     }
     const WORKER_API_URL = 'https://pokemon-checker-api.kronborgnielsen.workers.dev';
     const statusText = document.getElementById('statusText');
+    const previousStatusText = document.getElementById('previousStatusText');
     const lastChecked = document.getElementById('lastChecked');
     const statusDetails = document.getElementById('statusDetails');
     const startButton = document.getElementById('startButton');
@@ -584,6 +584,9 @@
       const secs = seconds % 60;
       return `${hours}h ${minutes}m ${secs}s`;
     }
+    function isAvailableStatus(status) {
+      return status.includes('Available') || status.includes('active');
+    }
     function updateSmoothRunTime() {
       if (workerStartTime) {
         const elapsed = Date.now() - workerStartTime;
@@ -609,7 +612,8 @@
         if (!response.ok) throw new Error('Failed to fetch status from Worker');
         const data = await response.json();
         statusText.textContent = data.statusText;
-        const isShopAvailable = data.statusText.includes('Available') || data.statusText.includes('active');
+        previousStatusText.textContent = data.previousStatusText || 'None';
+        const isShopAvailable = isAvailableStatus(data.statusText);
         const isQueueOrCaptcha = data.statusText.includes('Queue') || data.statusText.includes('CAPTCHA');
         statusText.classList.remove('text-green-500', 'text-red-500', 'text-orange-500');
         statusText.classList.add(isShopAvailable ? 'text-green-500' : isQueueOrCaptcha ? 'text-orange-500' : 'text-red-500');
@@ -676,9 +680,15 @@
         currentFrequency = settings.frequency || 10;
         frequencySlider.value = currentFrequency;
         frequencyValue.textContent = currentFrequency;
+        if (data.previousStatusText !== data.statusText) {
+          if (emailNotificationsEnabled && currentEmails.length > 0) {
+            sendEmail(data.statusText, data.statusDetails, currentEmails);
+          }
+        }
       } catch (error) {
         log(`Error connecting to Worker: Failed to fetch. Check Worker URL and status. (Network Error)`);
         statusText.textContent = 'Worker Disconnected';
+        previousStatusText.textContent = 'Unknown';
         statusText.classList.add('text-red-500');
         stopLocalTimer();
       }
@@ -734,7 +744,6 @@
         log('EmailJS is not available');
         return;
       }
-      await saveSettings({ emailNotificationsEnabled: false });
       recipientEmails.forEach(email => {
         if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
           log(`Invalid email address: ${email}. Skipping.`);
@@ -750,7 +759,7 @@
           (error) => log(`Failed to send email to ${email}: ${error}`)
         );
       });
-      showFeedback(emailFeedback, 'Email notifications deactivated after sending alert.');
+      showFeedback(emailFeedback, 'Email alert sent.');
     }
     async function testDiscord() {
       if (currentWebhooks.length === 0) {
