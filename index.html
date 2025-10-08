@@ -4,7 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pokémon Center Shop Access Checker</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="shortcut icon" href="favicon.png"> 
   <style>
     /* Tailwind-like utility classes */
     .bg-gray-100 { background-color: #f3f4f6; }
@@ -374,7 +378,8 @@
       margin-bottom: 1.5rem;
     }
     .button-group button {
-      flex: 1;
+      /* Adjusted to allow buttons to stack better and fill space consistently */
+      flex: 1 1 30%; 
       min-width: 120px;
     }
     /* --- MOBILE OPTIMIZATION START (Applies below 600px) --- */
@@ -481,11 +486,11 @@
       <button id="testButton" class="test-button bg-yellow-500 text-black">Test Single Check</button>
       <button id="startButton" class="bg-blue-500 text-white">Start Checking</button>
       <button id="stopButton" class="bg-red-500 text-white hidden">Stop Checking</button>
+      
+      <button id="testAlertsButton" class="bg-green-500 text-white">Test All Alerts</button>
+
       <button id="emailToggleButton" class="email-toggle-button active bg-green-500 text-white">Deactivate Email Alerts</button>
       <button id="webhookToggleButton" class="webhook-toggle-button inactive bg-gray-500 text-white">Activate Discord Alerts</button>
-      <button id="testEmailButton" class="bg-green-500 text-white">Test Email</button>
-      <button id="testDiscordButton" class="bg-purple-500 text-white">Test Discord</button>
-      <button id="testAlertsButton" class="bg-green-500 text-white">Test All Alerts</button>
     </div>
     <div class="status-display">
       <p><strong>Status:</strong> <span id="statusText">Waiting...</span></p>
@@ -537,8 +542,8 @@
     const startButton = document.getElementById('startButton');
     const stopButton = document.getElementById('stopButton');
     const testButton = document.getElementById('testButton');
-    const testEmailButton = document.getElementById('testEmailButton');
-    const testDiscordButton = document.getElementById('testDiscordButton');
+    const testEmailButton = document.getElementById('testEmailButton'); // NOTE: These are kept for JS compatibility but are hidden in HTML
+    const testDiscordButton = document.getElementById('testDiscordButton'); // NOTE: These are kept for JS compatibility but are hidden in HTML
     const testAlertsButton = document.getElementById('testAlertsButton');
     const emailToggleButton = document.getElementById('emailToggleButton');
     const webhookToggleButton = document.getElementById('webhookToggleButton');
@@ -726,16 +731,18 @@
             discordNotificationsEnabled = settings.discordNotificationsEnabled === true;
             updateWebhookListUI(currentWebhooks);
 
-            // Discord Toggle
-            if (discordNotificationsEnabled) {
-                webhookToggleButton.textContent = 'Deactivate Discord Alerts';
-                webhookToggleButton.classList.remove('inactive');
-                webhookToggleButton.classList.add('active');
+            // Discord Toggle - This is the crucial fix!
+            emailNotificationsEnabled = settings.emailNotificationsEnabled === true;
+            if (emailNotificationsEnabled) {
+                emailToggleButton.textContent = 'Deactivate Email Alerts';
+                emailToggleButton.classList.remove('inactive');
+                emailToggleButton.classList.add('active');
             } else {
-                webhookToggleButton.textContent = 'Activate Discord Alerts';
-                webhookToggleButton.classList.remove('active');
-                webhookToggleButton.classList.add('inactive');
+                emailToggleButton.textContent = 'Activate Email Alerts';
+                emailToggleButton.classList.remove('active');
+                emailToggleButton.classList.add('inactive');
             }
+            // End Discord Toggle Fix
 
             // Frequency
             currentFrequency = settings.frequency || 10;
@@ -743,7 +750,7 @@
             frequencyValue.textContent = currentFrequency;
 
         } catch (error) {
-            log(`Error connecting to Worker: ${error.message}. Check Worker URL and status.`);
+            log(`Error connecting to Worker: Failed to fetch. Check Worker URL and status. (Network Error)`);
             statusText.textContent = 'Worker Disconnected';
             statusText.classList.add('text-red-500');
             stopLocalTimer();
@@ -997,25 +1004,7 @@
         
         // 7. Test Alert Buttons
         
-        // **UPDATED TEST EMAIL LOGIC** (Separated, Humorous Content)
-        testEmailButton.addEventListener('click', () => {
-            if (!currentEmails.length || !emailNotificationsEnabled) {
-                alert('Add/Activate email alerts first.');
-                return;
-            }
-            
-            const testStatus = '📦 ALERT: Magikarp Splash Test!';
-            const testDetails = 'The system splashed its way out of the sea to confirm email delivery. Prepare for the ultimate restock splash!';
-
-            log('Sending humorous test email alert...');
-            sendEmail(testStatus, testDetails, currentEmails);
-            alert('Test email(s) sent! Check your inbox(es) or spam/junk folder.');
-        });
-        
-        // **UPDATED TEST DISCORD LOGIC** (Now just calls the core function)
-        testDiscordButton.addEventListener('click', testDiscord);
-        
-        // **UPDATED TEST ALL ALERTS LOGIC** (Consolidated, Humorous Content)
+        // NOTE: Test Email and Test Discord logic are now consolidated into Test All Alerts
         testAlertsButton.addEventListener('click', () => {
             let alerted = false;
             
@@ -1030,7 +1019,22 @@
             
             if (currentWebhooks.length > 0 && discordNotificationsEnabled) {
                 log('Sending test Discord alert...');
-                testDiscord(); // Discord relies on the worker's hardcoded humorous message
+                // The worker's /test_discord endpoint handles the fixed humorous message
+                // This is a proxy function to satisfy the button click
+                const workerTestDiscordProxy = () => {
+                    fetch(`${WORKER_API_URL}/test_discord`, { method: 'POST' })
+                        .then(response => {
+                            if (response.ok) {
+                                log('Discord test command sent to Worker.');
+                            } else {
+                                log('Discord test failed to reach worker.');
+                            }
+                        })
+                        .catch(error => {
+                            log(`Error sending Discord test: ${error.message}`);
+                        });
+                };
+                workerTestDiscordProxy();
                 alerted = true;
             }
             
