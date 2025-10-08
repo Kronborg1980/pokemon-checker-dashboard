@@ -487,6 +487,8 @@
       <button id="startButton" class="bg-blue-500 text-white">Start Checking</button>
       <button id="stopButton" class="bg-red-500 text-white hidden">Stop Checking</button>
       
+      <button id="testEmailButton" class="bg-green-500 text-white">Test Email</button>
+      <button id="testDiscordButton" class="bg-purple-500 text-white">Test Discord</button>
       <button id="testAlertsButton" class="bg-green-500 text-white">Test All Alerts</button>
 
       <button id="emailToggleButton" class="email-toggle-button active bg-green-500 text-white">Deactivate Email Alerts</button>
@@ -542,8 +544,8 @@
     const startButton = document.getElementById('startButton');
     const stopButton = document.getElementById('stopButton');
     const testButton = document.getElementById('testButton');
-    const testEmailButton = document.getElementById('testEmailButton'); // Kept for JS compatibility if needed
-    const testDiscordButton = document.getElementById('testDiscordButton'); // Kept for JS compatibility if needed
+    const testEmailButton = document.getElementById('testEmailButton'); 
+    const testDiscordButton = document.getElementById('testDiscordButton'); 
     const testAlertsButton = document.getElementById('testAlertsButton');
     const emailToggleButton = document.getElementById('emailToggleButton');
     const webhookToggleButton = document.getElementById('webhookToggleButton');
@@ -743,7 +745,7 @@
                 emailToggleButton.classList.add('inactive');
             }
             
-            // Discord Toggle (Corrected logic)
+            // Discord Toggle
             if (discordNotificationsEnabled) {
                 webhookToggleButton.textContent = 'Deactivate Discord Alerts';
                 webhookToggleButton.classList.remove('inactive');
@@ -1015,49 +1017,40 @@
         
         // 7. Test Alert Buttons
         
-        // **UPDATED TEST EMAIL LOGIC** (Separated, Humorous Content)
-        // NOTE: These specific buttons are gone, but their logic is consolidated into testAlertsButton
+        // **Test Email Button** (Now directly linked)
+        document.getElementById('testEmailButton').addEventListener('click', () => {
+            if (!currentEmails.length || !emailNotificationsEnabled) {
+                alert('Add/Activate email alerts first.');
+                return;
+            }
+            
+            const testStatus = '📦 ALERT: Magikarp Splash Test!';
+            const testDetails = 'The system splashed its way out of the sea to confirm email delivery. Prepare for the ultimate restock splash!';
+
+            log('Sending humorous test email alert...');
+            sendEmail(testStatus, testDetails, currentEmails);
+            alert('Test email(s) sent! Check your inbox(es) or spam/junk folder.');
+        });
         
-        // **UPDATED TEST ALL ALERTS LOGIC** (Consolidated, Humorous Content)
+        // **Test Discord Button** (Now directly linked)
+        document.getElementById('testDiscordButton').addEventListener('click', testDiscord);
+        
+        // **Test All Alerts Button** (Consolidated)
         testAlertsButton.addEventListener('click', () => {
             let alerted = false;
             
             const emailTestStatus = '📦 ALERT: Magikarp Splash Test!';
             const emailTestDetails = 'The system splashed its way out of the sea to confirm email delivery. Prepare for the ultimate restock splash!';
-            
-            // Recreating the functionality of the old testEmailButton click for use here
-            const sendTestEmail = () => {
-                log('Sending humorous test email alert...');
-                sendEmail(emailTestStatus, emailTestDetails, currentEmails);
-            };
-            
-            // Recreating the functionality of the old testDiscordButton click for use here
-            const sendTestDiscord = () => {
-                log('Sending test Discord alert...');
-                const workerTestDiscordProxy = () => {
-                    fetch(`${WORKER_API_URL}/test_discord`, { method: 'POST' })
-                        .then(response => {
-                            if (response.ok) {
-                                log('Discord test command sent to Worker.');
-                            } else {
-                                log('Discord test failed to reach worker.');
-                            }
-                        })
-                        .catch(error => {
-                            log(`Error sending Discord test: ${error.message}`);
-                        });
-                };
-                workerTestDiscordProxy();
-            };
-
 
             if (currentEmails.length && emailNotificationsEnabled) {
-                sendTestEmail();
+                log('Sending test email alert...');
+                sendEmail(emailTestStatus, emailTestDetails, currentEmails); 
                 alerted = true;
             }
             
             if (currentWebhooks.length > 0 && discordNotificationsEnabled) {
-                sendTestDiscord();
+                log('Sending test Discord alert...');
+                testDiscord(); 
                 alerted = true;
             }
             
