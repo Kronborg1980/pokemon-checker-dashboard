@@ -400,9 +400,14 @@
         width: 60px;
       }
       .button-group button {
-        flex: 1 1 45%; /* Allows buttons to wrap and occupy half the space */
+        /* Allows buttons to wrap and occupy half the space */
+        flex: 1 1 45%; 
         padding: 0.75rem;
         font-size: 0.85rem;
+      }
+      /* Specific override for the toggle buttons to ensure they stack cleanly */
+      .button-group .alert-toggle-row button {
+          flex: 1 1 48%; /* Slightly less than 50% to account for gap */
       }
       .live-log {
         font-size: 0.7rem;
@@ -483,15 +488,13 @@
       </div>
     </div>
     <div class="button-group">
-    
-     
-       <button id="startButton" class="bg-blue-500 text-white">Start Checking</button>
+      <button id="testButton" class="test-button bg-yellow-500 text-black">Test Single Check</button>
+      <button id="startButton" class="bg-blue-500 text-white">Start Checking</button>
       <button id="stopButton" class="bg-red-500 text-white hidden">Stop Checking</button>
+      
       <button id="testEmailButton" class="bg-green-500 text-white">Test Email</button>
       <button id="testDiscordButton" class="bg-purple-500 text-white">Test Discord</button>
 
-       <button id="testButton" class="test-button bg-yellow-500 text-black">Test Single Check</button>
-      
       <button id="emailToggleButton" class="email-toggle-button active bg-green-500 text-white">Deactivate Email Alerts</button>
       <button id="webhookToggleButton" class="webhook-toggle-button inactive bg-gray-500 text-white">Activate Discord Alerts</button>
     </div>
@@ -1035,10 +1038,6 @@
         
         // **Test Discord Button** (Directly linked)
         document.getElementById('testDiscordButton').addEventListener('click', testDiscord);
-        
-        // **Test All Alerts Button** (Consolidated, Now removed from HTML)
-        
-        // The original Test All Alerts functionality has been removed, leaving only dedicated buttons.
         
         // 8. Frequency Slider Update
         frequencySlider.addEventListener('input', function() {
