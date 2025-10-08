@@ -489,8 +489,6 @@
       
       <button id="testEmailButton" class="bg-green-500 text-white">Test Email</button>
       <button id="testDiscordButton" class="bg-purple-500 text-white">Test Discord</button>
-      <button id="testAlertsButton" class="bg-green-500 text-white">Test All Alerts</button>
-
       <button id="emailToggleButton" class="email-toggle-button active bg-green-500 text-white">Deactivate Email Alerts</button>
       <button id="webhookToggleButton" class="webhook-toggle-button inactive bg-gray-500 text-white">Activate Discord Alerts</button>
     </div>
@@ -546,7 +544,7 @@
     const testButton = document.getElementById('testButton');
     const testEmailButton = document.getElementById('testEmailButton'); 
     const testDiscordButton = document.getElementById('testDiscordButton'); 
-    const testAlertsButton = document.getElementById('testAlertsButton');
+    const testAlertsButton = document.getElementById('testAlertsButton'); // This button is removed from HTML but kept for JS compatibility if needed
     const emailToggleButton = document.getElementById('emailToggleButton');
     const webhookToggleButton = document.getElementById('webhookToggleButton');
     const addPokezonanWebhookButton = document.getElementById('addPokezonanWebhookButton');
@@ -1036,21 +1034,42 @@
         document.getElementById('testDiscordButton').addEventListener('click', testDiscord);
         
         // **Test All Alerts Button** (Consolidated)
-        testAlertsButton.addEventListener('click', () => {
+        document.getElementById('testAlertsButton').addEventListener('click', () => {
             let alerted = false;
             
             const emailTestStatus = '📦 ALERT: Magikarp Splash Test!';
             const emailTestDetails = 'The system splashed its way out of the sea to confirm email delivery. Prepare for the ultimate restock splash!';
 
+            // Recreating the functionality of the old testEmailButton click for use here
+            const sendTestEmail = () => {
+                log('Sending humorous test email alert...');
+                sendEmail(emailTestStatus, emailTestDetails, currentEmails);
+            };
+            
+            // Recreating the functionality of the old testDiscordButton click for use here
+            const sendTestDiscord = () => {
+                log('Sending test Discord alert...');
+                fetch(`${WORKER_API_URL}/test_discord`, { method: 'POST' })
+                    .then(response => {
+                        if (response.ok) {
+                            log('Discord test command sent to Worker.');
+                        } else {
+                            log('Discord test failed to reach worker.');
+                        }
+                    })
+                    .catch(error => {
+                        log(`Error sending Discord test: ${error.message}`);
+                    });
+            };
+
+
             if (currentEmails.length && emailNotificationsEnabled) {
-                log('Sending test email alert...');
-                sendEmail(emailTestStatus, emailTestDetails, currentEmails); 
+                sendTestEmail();
                 alerted = true;
             }
             
             if (currentWebhooks.length > 0 && discordNotificationsEnabled) {
-                log('Sending test Discord alert...');
-                testDiscord(); 
+                sendTestDiscord();
                 alerted = true;
             }
             
