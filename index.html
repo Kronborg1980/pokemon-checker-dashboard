@@ -493,8 +493,9 @@
       });
     }
 
-    // !! IMPORTANT: REPLACE THIS URL with your actual Worker URL !!
+    // !! 🔴 CRITICAL: REPLACE THIS URL with your actual deployed Worker URL !!
     const WORKER_API_URL = 'https://pokemon-checker-api.kronborgnielsen.workers.dev'; 
+    // Example: const WORKER_API_URL = 'https://my-pokemon-checker.myusername.workers.dev';
 
     const statusText = document.getElementById('statusText');
     const previousStatusText = document.getElementById('previousStatusText');
@@ -502,7 +503,7 @@
     const nextCheckInElement = document.getElementById('nextCheckIn');
     const statusDetails = document.getElementById('statusDetails');
     const testButton = document.getElementById('testButton');
-    const resetButton = document.getElementById('resetButton'); // New Button
+    const resetButton = document.getElementById('resetButton'); 
     const testEmailButton = document.getElementById('testEmailButton');
     const testDiscordButton = document.getElementById('testDiscordButton');
     const emailToggleButton = document.getElementById('emailToggleButton');
@@ -631,7 +632,7 @@
         // 2. Update Last Checked Time
         if (data.lastChecked && data.lastChecked !== 'Never') {
           try {
-            // FIX: Use Date constructor with UTC string to correctly convert to local time
+            // Use Date constructor with UTC string to correctly convert to local time
             const date = new Date(data.lastChecked); 
             if (!isNaN(date.getTime())) {
               lastChecked.textContent = date.toLocaleTimeString(undefined, BROWSER_TIME_OPTIONS);
@@ -650,7 +651,6 @@
         statusDetails.textContent = data.details;
 
         // 3. Update Run Time
-        // The worker stores runningSince in ISO format.
         if (data.runningSince) {
             workerStartTime = new Date(data.runningSince).getTime();
             startLocalTimer();
@@ -663,7 +663,7 @@
         currentEmails = settings.emails || [];
         currentWebhooks = settings.discordWebhooks || [];
         
-        // Use the settings.notificationsEnabled keys from the worker
+        // Read the settings from the worker
         emailNotificationsEnabled = settings.notificationsEnabled?.email !== false; 
         discordNotificationsEnabled = settings.notificationsEnabled?.discord === true; 
         
@@ -724,7 +724,7 @@
             log(`Control Action Failed: ${data.message || 'Unknown error'}`);
         }
         
-        // Wait a moment before fetching status for update propagation
+        // Give KV time to update, then fetch status
         setTimeout(fetchStatus, 500); 
       } catch (error) {
         log(`Error controlling Worker: ${error.message}`);
@@ -786,7 +786,6 @@
           continue;
         }
         try {
-          // Send email directly from the browser using EmailJS SDK
           await emailjs.send("service_ahqdaj5", "template_whhvnra", {
             status: status,
             details: details,
@@ -803,7 +802,7 @@
       if (successCount > 0) {
           showFeedback(emailFeedback, `Test email alert sent to ${successCount} recipient(s).`);
       } else {
-          showFeedback(emailFeedback, 'Test email failed. Check logs.');
+          showFeedback(emailFeedback, 'Test email failed. Check browser console for errors.');
       }
     }
 
@@ -820,7 +819,6 @@
       log('Sending Discord test command to Worker...');
       
       try {
-        // Send request to the new /test_discord endpoint on the Worker
         const response = await fetch(`${WORKER_API_URL}/test_discord`, { method: 'POST' });
         const data = await response.json();
         
