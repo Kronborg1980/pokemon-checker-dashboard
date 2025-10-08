@@ -375,8 +375,7 @@
       margin-bottom: 1.5rem;
     }
     .button-group button {
-      /* Adjusted to allow buttons to stack better and fill space consistently */
-      flex: 1 1 30%; 
+      flex: 1;
       min-width: 120px;
     }
     /* --- MOBILE OPTIMIZATION START (Applies below 600px) --- */
@@ -483,13 +482,11 @@
       <button id="testButton" class="test-button bg-yellow-500 text-black">Test Single Check</button>
       <button id="startButton" class="bg-blue-500 text-white">Start Checking</button>
       <button id="stopButton" class="bg-red-500 text-white hidden">Stop Checking</button>
-      
+      <button id="emailToggleButton" class="email-toggle-button active bg-green-500 text-white">Deactivate Email Alerts</button>
+      <button id="webhookToggleButton" class="webhook-toggle-button inactive bg-gray-500 text-white">Activate Discord Alerts</button>
       <button id="testEmailButton" class="bg-green-500 text-white">Test Email</button>
       <button id="testDiscordButton" class="bg-purple-500 text-white">Test Discord</button>
       <button id="testAlertsButton" class="bg-green-500 text-white">Test All Alerts</button>
-
-      <button id="emailToggleButton" class="email-toggle-button active bg-green-500 text-white">Deactivate Email Alerts</button>
-      <button id="webhookToggleButton" class="webhook-toggle-button inactive bg-gray-500 text-white">Activate Discord Alerts</button>
     </div>
     <div class="status-display">
       <p><strong>Status:</strong> <span id="statusText">Waiting...</span></p>
@@ -730,18 +727,16 @@
             discordNotificationsEnabled = settings.discordNotificationsEnabled === true;
             updateWebhookListUI(currentWebhooks);
 
-            // Discord Toggle - This is the crucial fix!
-            emailNotificationsEnabled = settings.emailNotificationsEnabled === true;
-            if (emailNotificationsEnabled) {
-                emailToggleButton.textContent = 'Deactivate Email Alerts';
-                emailToggleButton.classList.remove('inactive');
-                emailToggleButton.classList.add('active');
+            // Discord Toggle
+            if (discordNotificationsEnabled) {
+                webhookToggleButton.textContent = 'Deactivate Discord Alerts';
+                webhookToggleButton.classList.remove('inactive');
+                webhookToggleButton.classList.add('active');
             } else {
-                emailToggleButton.textContent = 'Activate Email Alerts';
-                emailToggleButton.classList.remove('active');
-                emailToggleButton.classList.add('inactive');
+                webhookToggleButton.textContent = 'Activate Discord Alerts';
+                webhookToggleButton.classList.remove('active');
+                webhookToggleButton.classList.add('inactive');
             }
-            // End Discord Toggle Fix
 
             // Frequency
             currentFrequency = settings.frequency || 10;
@@ -749,7 +744,7 @@
             frequencyValue.textContent = currentFrequency;
 
         } catch (error) {
-            log(`Error connecting to Worker: Failed to fetch. Check Worker URL and status. (Network Error)`);
+            log(`Error connecting to Worker: ${error.message}. Check Worker URL and status.`);
             statusText.textContent = 'Worker Disconnected';
             statusText.classList.add('text-red-500');
             stopLocalTimer();
@@ -767,7 +762,7 @@
             log(data.message);
             await fetchStatus();
         } catch (error) {
-            log(`Error controlling Worker: Failed to fetch. (Network Error)`);
+            log(`Error controlling Worker: ${error.message}`);
         }
     }
 
@@ -791,7 +786,7 @@
             await fetchStatus();
             return true;
         } catch (error) {
-            log(`Error saving settings: Failed to fetch. (Network Error)`);
+            log(`Error saving settings: ${error.message}`);
             return false;
         }
     }
@@ -850,7 +845,7 @@
                 throw new Error(`Worker responded with status ${response.status}`);
             }
         } catch (error) {
-            log(`Error sending Discord test: Failed to fetch. (Network Error)`);
+            log(`Error sending Discord test: ${error.message}`);
             alert('Failed to send Discord test. Check Worker console for errors.');
         }
     }
