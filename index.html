@@ -542,8 +542,8 @@
     const startButton = document.getElementById('startButton');
     const stopButton = document.getElementById('stopButton');
     const testButton = document.getElementById('testButton');
-    const testEmailButton = document.getElementById('testEmailButton'); // NOTE: These are kept for JS compatibility but are hidden in HTML
-    const testDiscordButton = document.getElementById('testDiscordButton'); // NOTE: These are kept for JS compatibility but are hidden in HTML
+    const testEmailButton = document.getElementById('testEmailButton'); // Kept for JS compatibility if needed
+    const testDiscordButton = document.getElementById('testDiscordButton'); // Kept for JS compatibility if needed
     const testAlertsButton = document.getElementById('testAlertsButton');
     const emailToggleButton = document.getElementById('emailToggleButton');
     const webhookToggleButton = document.getElementById('webhookToggleButton');
@@ -731,7 +731,7 @@
             discordNotificationsEnabled = settings.discordNotificationsEnabled === true;
             updateWebhookListUI(currentWebhooks);
 
-            // Discord Toggle - This is the crucial fix!
+            // Email Toggle
             emailNotificationsEnabled = settings.emailNotificationsEnabled === true;
             if (emailNotificationsEnabled) {
                 emailToggleButton.textContent = 'Deactivate Email Alerts';
@@ -742,7 +742,6 @@
                 emailToggleButton.classList.remove('active');
                 emailToggleButton.classList.add('inactive');
             }
-            // End Discord Toggle Fix
 
             // Frequency
             currentFrequency = settings.frequency || 10;
@@ -1004,23 +1003,28 @@
         
         // 7. Test Alert Buttons
         
-        // NOTE: Test Email and Test Discord logic are now consolidated into Test All Alerts
+        // NOTE: The individual test buttons are removed from HTML but the JS functions are used by the testAlertsButton
+        
+        // **UPDATED TEST EMAIL LOGIC** (Separated, Humorous Content)
+        // This function is now ONLY used by testAlertsButton
+        // We'll keep the testEmailButton reference for now, but its HTML is gone.
+
+        // **UPDATED TEST ALL ALERTS LOGIC** (Consolidated, Humorous Content)
         testAlertsButton.addEventListener('click', () => {
             let alerted = false;
             
             const emailTestStatus = '📦 ALERT: Magikarp Splash Test!';
             const emailTestDetails = 'The system splashed its way out of the sea to confirm email delivery. Prepare for the ultimate restock splash!';
-
-            if (currentEmails.length && emailNotificationsEnabled) {
-                log('Sending test email alert...');
-                sendEmail(emailTestStatus, emailTestDetails, currentEmails); // Email is sent via FE with custom content
-                alerted = true;
-            }
             
-            if (currentWebhooks.length > 0 && discordNotificationsEnabled) {
+            // Recreating the functionality of the old testEmailButton click for use here
+            const sendTestEmail = () => {
+                log('Sending humorous test email alert...');
+                sendEmail(emailTestStatus, emailTestDetails, currentEmails);
+            };
+            
+            // Recreating the functionality of the old testDiscordButton click for use here
+            const sendTestDiscord = () => {
                 log('Sending test Discord alert...');
-                // The worker's /test_discord endpoint handles the fixed humorous message
-                // This is a proxy function to satisfy the button click
                 const workerTestDiscordProxy = () => {
                     fetch(`${WORKER_API_URL}/test_discord`, { method: 'POST' })
                         .then(response => {
@@ -1035,6 +1039,16 @@
                         });
                 };
                 workerTestDiscordProxy();
+            };
+
+
+            if (currentEmails.length && emailNotificationsEnabled) {
+                sendTestEmail();
+                alerted = true;
+            }
+            
+            if (currentWebhooks.length > 0 && discordNotificationsEnabled) {
+                sendTestDiscord();
                 alerted = true;
             }
             
