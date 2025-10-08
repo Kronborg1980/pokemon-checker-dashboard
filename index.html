@@ -742,6 +742,18 @@
                 emailToggleButton.classList.remove('active');
                 emailToggleButton.classList.add('inactive');
             }
+            
+            // Discord Toggle (Corrected logic)
+            if (discordNotificationsEnabled) {
+                webhookToggleButton.textContent = 'Deactivate Discord Alerts';
+                webhookToggleButton.classList.remove('inactive');
+                webhookToggleButton.classList.add('active');
+            } else {
+                webhookToggleButton.textContent = 'Activate Discord Alerts';
+                webhookToggleButton.classList.remove('active');
+                webhookToggleButton.classList.add('inactive');
+            }
+
 
             // Frequency
             currentFrequency = settings.frequency || 10;
@@ -1003,12 +1015,9 @@
         
         // 7. Test Alert Buttons
         
-        // NOTE: The individual test buttons are removed from HTML but the JS functions are used by the testAlertsButton
-        
         // **UPDATED TEST EMAIL LOGIC** (Separated, Humorous Content)
-        // This function is now ONLY used by testAlertsButton
-        // We'll keep the testEmailButton reference for now, but its HTML is gone.
-
+        // NOTE: These specific buttons are gone, but their logic is consolidated into testAlertsButton
+        
         // **UPDATED TEST ALL ALERTS LOGIC** (Consolidated, Humorous Content)
         testAlertsButton.addEventListener('click', () => {
             let alerted = false;
