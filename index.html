@@ -10,7 +10,6 @@
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="shortcut icon" href="favicon.png">
   <style>
-    /* ... (Your original CSS styles remain here) ... */
     .bg-gray-100 { background-color: #f3f4f6; }
     .bg-white { background-color: #ffffff; }
     .bg-blue-500 { background-color: #3b82f6; }
@@ -459,10 +458,11 @@
       </div>
     </div>
     <div class="button-group">
-      <button id="testButton" class="test-button bg-blue-500 text-white">Test Single Check</button>
+      <button id="testButton" class="test-button bg-yellow-500 text-black">Test Single Check</button>
+      <button id="startButton" class="bg-blue-500 text-white">Start Checking</button>
+      <button id="stopButton" class="bg-red-500 text-white hidden">Stop Checking</button>
       <button id="testEmailButton" class="bg-green-500 text-white">Test Email</button>
       <button id="testDiscordButton" class="bg-purple-500 text-white">Test Discord</button>
-      <button id="resetButton" class="bg-red-500 text-white">⚠️ Reset Worker State ⚠️</button>
       <button id="emailToggleButton" class="email-toggle-button active bg-green-500 text-white">Deactivate Email Alerts</button>
       <button id="webhookToggleButton" class="webhook-toggle-button inactive bg-gray-500 text-white">Activate Discord Alerts</button>
     </div>
@@ -483,6 +483,18 @@
     <source src="https://www.soundjay.com/buttons/beep-01a.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script type="text/javascript">
+    var gk_isXlsx = false;
+    var gk_xlsxFileLookup = {};
+    var gk_fileData = {};
+    function filledCell(cell) {
+      return cell !== '' && cell != null;
+    }
+    function loadFileData(filename) {
+      return gk_fileData[filename] || "";
+    }
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js"></script>
   <script>
     if (typeof emailjs === 'undefined') {
@@ -492,18 +504,15 @@
         publicKey: "8w7eu6mrg3lRl6ta3"
       });
     }
-
-    // !! 🔴 CRITICAL: REPLACE THIS URL with your actual deployed Worker URL !!
-    const WORKER_API_URL = 'https://pokemon-checker-api.kronborgnielsen.workers.dev'; 
-    // Example: const WORKER_API_URL = 'https://my-pokemon-checker.myusername.workers.dev';
-
+    const WORKER_API_URL = 'https://pokemon-checker-api.kronborgnielsen.workers.dev';
     const statusText = document.getElementById('statusText');
     const previousStatusText = document.getElementById('previousStatusText');
     const lastChecked = document.getElementById('lastChecked');
     const nextCheckInElement = document.getElementById('nextCheckIn');
     const statusDetails = document.getElementById('statusDetails');
+    const startButton = document.getElementById('startButton');
+    const stopButton = document.getElementById('stopButton');
     const testButton = document.getElementById('testButton');
-    const resetButton = document.getElementById('resetButton'); 
     const testEmailButton = document.getElementById('testEmailButton');
     const testDiscordButton = document.getElementById('testDiscordButton');
     const emailToggleButton = document.getElementById('emailToggleButton');
@@ -524,7 +533,6 @@
     const autoRedirectCheckbox = document.getElementById('autoRedirect');
     const noEmailsMessage = document.getElementById('noEmailsMessage');
     const noWebhooksMessage = document.getElementById('noWebhooksMessage');
-
     let emailNotificationsEnabled = true;
     let discordNotificationsEnabled = false;
     let currentWebhooks = [];
@@ -532,9 +540,7 @@
     let currentFrequency = 10;
     let localTimerInterval = null;
     let workerStartTime = null;
-
     const POKEZONAN_WEBHOOK_URL = 'https://discord.com/api/webhooks/1418654823745716436/vuMKu1s095Cq3BfU06OF_Z_mwxG39zHppHJ3c4BX5X38WuJFWPGhIZdopWTEEXlophiN';
-
     const BROWSER_TIME_OPTIONS = {
       hour: '2-digit',
       minute: '2-digit',
@@ -542,7 +548,6 @@
       hour12: false,
       timeZoneName: 'short'
     };
-
     function log(message) {
       const timestamp = new Date().toLocaleTimeString(undefined, {hour: '2-digit', minute: '2-digit'});
       const logEntry = document.createElement('p');
@@ -550,16 +555,13 @@
       liveLog.prepend(logEntry);
       console.log(message);
     }
-
     function updateNoEmailsMessage() {
       noEmailsMessage.classList.toggle('show', submittedEmailsList.children.length === 0);
     }
-
     function updatePokezonanButtonVisibility() {
       const isPokezonanAdded = currentWebhooks.includes(POKEZONAN_WEBHOOK_URL);
       addPokezonanWebhookButton.classList.toggle('hidden', isPokezonanAdded);
     }
-
     function updateNoWebhooksMessage() {
       noWebhooksMessage.classList.toggle('show', submittedWebhooksList.children.length === 0);
       if (submittedWebhooksList.children.length > 0) {
@@ -569,7 +571,6 @@
       }
       updatePokezonanButtonVisibility();
     }
-
     function showFeedback(feedbackElement, message) {
       feedbackElement.textContent = message;
       feedbackElement.classList.add('show');
@@ -577,7 +578,6 @@
         feedbackElement.classList.remove('show');
       }, 2000);
     }
-
     function formatDuration(ms) {
       if (typeof ms !== 'number' || ms < 0) return '0h 0m 0s';
       const seconds = Math.floor(ms / 1000);
@@ -586,24 +586,20 @@
       const secs = seconds % 60;
       return `${hours}h ${minutes}m ${secs}s`;
     }
-
     function isAvailableStatus(status) {
       return status.includes('Available') || status.includes('active');
     }
-
     function updateSmoothRunTime() {
       if (workerStartTime) {
         const elapsed = Date.now() - workerStartTime;
         runTime.textContent = formatDuration(elapsed);
       }
     }
-
     function startLocalTimer() {
       if (!localTimerInterval) {
         localTimerInterval = setInterval(updateSmoothRunTime, 1000);
       }
     }
-
     function stopLocalTimer() {
       if (localTimerInterval) {
         clearInterval(localTimerInterval);
@@ -612,65 +608,60 @@
       workerStartTime = null;
       runTime.textContent = '0h 0m 0s';
     }
-
     async function fetchStatus() {
       try {
         const response = await fetch(`${WORKER_API_URL}/status`);
         if (!response.ok) throw new Error('Failed to fetch status from Worker');
         const data = await response.json();
-
-        // 1. Update Status Display
-        statusText.textContent = data.status;
-        previousStatusText.textContent = data.previousStatus || 'None';
-        
-        const isShopAvailable = isAvailableStatus(data.status);
-        const isQueueOrCaptcha = data.status.includes('Queue') || data.status.includes('CAPTCHA');
-        
+        statusText.textContent = data.statusText;
+        previousStatusText.textContent = data.previousStatusText || 'None';
+        const isShopAvailable = isAvailableStatus(data.statusText);
+        const isQueueOrCaptcha = data.statusText.includes('Queue') || data.statusText.includes('CAPTCHA');
         statusText.classList.remove('text-green-500', 'text-red-500', 'text-orange-500');
         statusText.classList.add(isShopAvailable ? 'text-green-500' : isQueueOrCaptcha ? 'text-orange-500' : 'text-red-500');
-        
-        // 2. Update Last Checked Time
         if (data.lastChecked && data.lastChecked !== 'Never') {
           try {
-            // Use Date constructor with UTC string to correctly convert to local time
-            const date = new Date(data.lastChecked); 
+            const date = new Date(data.lastChecked);
             if (!isNaN(date.getTime())) {
               lastChecked.textContent = date.toLocaleTimeString(undefined, BROWSER_TIME_OPTIONS);
             } else {
-              lastChecked.textContent = data.lastChecked + " (Time Sync Error)";
+              lastChecked.textContent = data.lastChecked + " (Time Zone Sync Error)";
             }
           } catch (e) {
             lastChecked.textContent = data.lastChecked + " (Time Error)";
             console.error("Failed to parse date from worker:", e);
           }
         } else {
-          lastChecked.textContent = 'Never';
+          lastChecked.textContent = data.lastChecked;
         }
-        
         nextCheckInElement.textContent = data.nextCheckIn || 'N/A';
-        statusDetails.textContent = data.details;
-
-        // 3. Update Run Time
-        if (data.runningSince) {
-            workerStartTime = new Date(data.runningSince).getTime();
-            startLocalTimer();
+        statusDetails.textContent = data.statusDetails;
+        if (data.isRunning) {
+          workerStartTime = data.startTime;
+          startLocalTimer();
         } else {
-            stopLocalTimer();
+          stopLocalTimer();
         }
-
-        // 4. Update Settings (Emails, Webhooks, Toggles)
+        if (data.isRunning) {
+          startButton.classList.add('hidden');
+          stopButton.classList.remove('hidden');
+        } else {
+          startButton.classList.remove('hidden');
+          stopButton.classList.add('hidden');
+        }
+        liveLog.innerHTML = '';
+        data.log.reverse().forEach(entry => {
+          const logEntry = document.createElement('p');
+          logEntry.textContent = entry;
+          liveLog.appendChild(logEntry);
+        });
         const settings = data.settings || {};
         currentEmails = settings.emails || [];
-        currentWebhooks = settings.discordWebhooks || [];
-        
-        // Read the settings from the worker
-        emailNotificationsEnabled = settings.notificationsEnabled?.email !== false; 
-        discordNotificationsEnabled = settings.notificationsEnabled?.discord === true; 
-        
         updateEmailListUI(currentEmails);
+        currentWebhooks = settings.discordWebhooks || [];
+        discordNotificationsEnabled = settings.discordNotificationsEnabled === true;
         updateWebhookListUI(currentWebhooks);
-        
-        // Update Email Toggle Button
+        emailNotificationsEnabled = settings.emailNotificationsEnabled === true;
         if (emailNotificationsEnabled) {
           emailToggleButton.textContent = 'Deactivate Email Alerts';
           emailToggleButton.classList.remove('inactive');
@@ -680,8 +671,6 @@
           emailToggleButton.classList.remove('active');
           emailToggleButton.classList.add('inactive');
         }
-        
-        // Update Discord Toggle Button
         if (discordNotificationsEnabled) {
           webhookToggleButton.textContent = 'Deactivate Discord Alerts';
           webhookToggleButton.classList.remove('inactive');
@@ -691,25 +680,23 @@
           webhookToggleButton.classList.remove('active');
           webhookToggleButton.classList.add('inactive');
         }
-
         currentFrequency = settings.frequency || 10;
         frequencySlider.value = currentFrequency;
         frequencyValue.textContent = currentFrequency;
-
+        if (data.previousStatusText !== data.statusText) {
+          if (emailNotificationsEnabled && currentEmails.length > 0) {
+            sendEmail(data.statusText, data.statusDetails, currentEmails);
+          }
+        }
       } catch (error) {
-        log(`Error connecting to Worker: Failed to fetch. Check Worker URL and status. (Network Error or Internal Worker Error)`);
+        log(`Error connecting to Worker: Failed to fetch. Check Worker URL and status. (Network Error)`);
         statusText.textContent = 'Worker Disconnected';
         previousStatusText.textContent = 'Unknown';
         statusText.classList.add('text-red-500');
         stopLocalTimer();
       }
     }
-
     async function controlWorker(action) {
-      if (action === 'reset' && !confirm("Are you sure you want to reset the Worker's state? This clears the status and running time in the KV store, which may be required if the worker is stuck on old data.")) {
-          return;
-      }
-
       try {
         const response = await fetch(`${WORKER_API_URL}/control`, {
           method: 'POST',
@@ -717,55 +704,37 @@
           body: JSON.stringify({ action: action })
         });
         const data = await response.json();
-        
-        if (response.ok) {
-            log(data.message);
-        } else {
-            log(`Control Action Failed: ${data.message || 'Unknown error'}`);
-        }
-        
-        // Give KV time to update, then fetch status
-        setTimeout(fetchStatus, 500); 
+        log(data.message);
+        await fetchStatus();
       } catch (error) {
         log(`Error controlling Worker: ${error.message}`);
       }
     }
-
     async function saveSettings(settingsUpdate) {
-      // Merge local state with the update before saving
-      const newSettings = {
+      const settings = {
         emails: currentEmails,
         discordWebhooks: currentWebhooks,
-        emailNotificationsEnabled: emailNotificationsEnabled,
         discordNotificationsEnabled: discordNotificationsEnabled,
+        emailNotificationsEnabled: emailNotificationsEnabled,
         frequency: parseInt(frequencySlider.value),
         ...settingsUpdate
       };
-      
-      // Update local state immediately before sending
-      currentEmails = newSettings.emails;
-      currentWebhooks = newSettings.discordWebhooks;
-      emailNotificationsEnabled = newSettings.emailNotificationsEnabled;
-      discordNotificationsEnabled = newSettings.discordNotificationsEnabled;
-      currentFrequency = newSettings.frequency;
-
       try {
         const response = await fetch(`${WORKER_API_URL}/settings`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newSettings)
+          body: JSON.stringify(settings)
         });
         const data = await response.json();
         log(data.message);
-        await fetchStatus(); // Fetch updated settings back
+        await fetchStatus();
         return true;
       } catch (error) {
         log(`Error saving settings: ${error.message}`);
         return false;
       }
     }
-
-    async function sendEmailAlert(status, details, recipientEmails) {
+    async function sendEmail(status, details, recipientEmails) {
       if (!emailNotificationsEnabled) {
         log('Email notifications disabled; skipping.');
         return;
@@ -778,34 +747,23 @@
         log('EmailJS is not available');
         return;
       }
-
-      let successCount = 0;
-      for (const email of recipientEmails) {
+      recipientEmails.forEach(email => {
         if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
           log(`Invalid email address: ${email}. Skipping.`);
-          continue;
+          return;
         }
-        try {
-          await emailjs.send("service_ahqdaj5", "template_whhvnra", {
-            status: status,
-            details: details,
-            timestamp: new Date().toLocaleString(),
-            to_email: email
-          });
-          log(`Email sent successfully to ${email}`);
-          successCount++;
-        } catch (error) {
-          log(`Failed to send email to ${email}: ${error}`);
-        }
-      }
-      
-      if (successCount > 0) {
-          showFeedback(emailFeedback, `Test email alert sent to ${successCount} recipient(s).`);
-      } else {
-          showFeedback(emailFeedback, 'Test email failed. Check browser console for errors.');
-      }
+        emailjs.send("service_ahqdaj5", "template_whhvnra", {
+          status: status,
+          details: details,
+          timestamp: new Date().toLocaleString(),
+          to_email: email
+        }).then(
+          () => log(`Email sent successfully to ${email}`),
+          (error) => log(`Failed to send email to ${email}: ${error}`)
+        );
+      });
+      showFeedback(emailFeedback, 'Email alert sent.');
     }
-
     async function testDiscord() {
       if (currentWebhooks.length === 0) {
         alert('Please add at least one Discord webhook to test.');
@@ -815,26 +773,18 @@
         alert('Please activate Discord notifications to test.');
         return;
       }
-
-      log('Sending Discord test command to Worker...');
-      
       try {
         const response = await fetch(`${WORKER_API_URL}/test_discord`, { method: 'POST' });
-        const data = await response.json();
-        
         if (response.ok) {
-          log(data.message);
-          showFeedback(webhookFeedback, 'Discord test successful!');
+          log('Discord test command sent to Worker.');
         } else {
-          log(`Discord Test Failed: ${data.message || 'Worker test endpoint failed.'}`);
-          alert(`Discord Test Failed: ${data.message || 'Check Worker logs for details.'}`);
+          throw new Error(`Worker responded with status ${response.status}`);
         }
       } catch (error) {
-        log(`Error sending Discord test API call: ${error.message}`);
-        alert('Failed to call Discord test endpoint. Check Worker URL and status.');
+        log(`Error sending Discord test: ${error.message}`);
+        alert('Failed to send Discord test. Check Worker console for errors.');
       }
     }
-
     function updateEmailListUI(emails) {
       submittedEmailsList.innerHTML = '';
       emails.forEach(email => {
@@ -856,7 +806,6 @@
       });
       updateNoEmailsMessage();
     }
-
     function updateWebhookListUI(webhooks) {
       submittedWebhooksList.innerHTML = '';
       webhooks.forEach(webhook => {
@@ -879,18 +828,12 @@
       });
       updateNoWebhooksMessage();
     }
-
     document.addEventListener('DOMContentLoaded', async () => {
-      // Fetch initial status and settings
-      await fetchStatus(); 
-      // Set interval for continuous polling
-      setInterval(fetchStatus, 5000); 
-
+      await fetchStatus();
+      setInterval(fetchStatus, 5000);
       const initialInputGroup = emailInputsContainer.querySelector('.email-input-group');
       const initialInput = initialInputGroup.querySelector('.email-input');
       const submitButton = initialInputGroup.querySelector('.submit-email-button');
-
-      // Event Listeners
       submitButton.addEventListener('click', async function() {
         const email = initialInput.value.trim();
         if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -911,7 +854,6 @@
           log(`Email submitted: ${email}`);
         }
       });
-
       submitWebhookButton.addEventListener('click', async function() {
         const webhook = webhookInput.value.trim();
         if (!webhook || !webhook.startsWith('http')) {
@@ -932,7 +874,6 @@
           log(`Webhook added: ${webhook.substring(0, 30)}...`);
         }
       });
-
       addPokezonanWebhookButton.addEventListener('click', async () => {
         const defaultWebhook = POKEZONAN_WEBHOOK_URL;
         if (currentWebhooks.includes(defaultWebhook)) {
@@ -946,10 +887,9 @@
           log(`Pokezonan Webhook added: ${defaultWebhook.substring(0, 30)}...`);
         }
       });
-      
+      startButton.addEventListener('click', () => controlWorker('start'));
+      stopButton.addEventListener('click', () => controlWorker('stop'));
       testButton.addEventListener('click', () => controlWorker('test_check'));
-      resetButton.addEventListener('click', () => controlWorker('reset'));
-
       emailToggleButton.addEventListener('click', async () => {
         const newState = !emailNotificationsEnabled;
         const success = await saveSettings({ emailNotificationsEnabled: newState });
@@ -958,7 +898,6 @@
           log(`Email notifications ${newState ? 'enabled' : 'disabled'}.`);
         }
       });
-
       webhookToggleButton.addEventListener('click', async () => {
         const newState = !discordNotificationsEnabled;
         const success = await saveSettings({ discordNotificationsEnabled: newState });
@@ -967,29 +906,25 @@
           log(`Discord notifications ${newState ? 'enabled' : 'disabled'}.`);
         }
       });
-
       testEmailButton.addEventListener('click', () => {
         if (!currentEmails.length || !emailNotificationsEnabled) {
-          alert('Add and activate email alerts first.');
+          alert('Add/Activate email alerts first.');
           return;
         }
         const testStatus = '📦 ALERT: Magikarp Splash Test!';
         const testDetails = 'The system splashed its way out of the sea to confirm email delivery. Prepare for the ultimate restock splash!';
         log('Sending humorous test email alert...');
-        sendEmailAlert(testStatus, testDetails, currentEmails);
+        sendEmail(testStatus, testDetails, currentEmails);
+        alert('Test email(s) sent! Check your inbox(es) or spam/junk folder.');
       });
-
       testDiscordButton.addEventListener('click', testDiscord);
-
       frequencySlider.addEventListener('input', function() {
         frequencyValue.textContent = this.value;
       });
-
       frequencySlider.addEventListener('change', function() {
         saveSettings({ frequency: parseInt(this.value) });
         log(`Monitoring frequency setting updated to ${this.value} minutes.`);
       });
-
       autoRedirectCheckbox.addEventListener('click', () => {
         alert("Auto-redirect is disabled when running in 24/7 serverless mode, as the check happens on the server, not in your browser. The Worker will send an immediate alert instead.");
         autoRedirectCheckbox.checked = false;
