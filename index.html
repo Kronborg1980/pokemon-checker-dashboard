@@ -375,7 +375,8 @@
       margin-bottom: 1.5rem;
     }
     .button-group button {
-      flex: 1;
+      /* Adjusted to allow buttons to stack better and fill space consistently */
+      flex: 1 1 30%; 
       min-width: 120px;
     }
     /* --- MOBILE OPTIMIZATION START (Applies below 600px) --- */
@@ -396,7 +397,8 @@
         width: 60px;
       }
       .button-group button {
-        flex: 1 1 45%; /* Allows buttons to wrap and occupy half the space */
+        /* On small screens, force two buttons per row */
+        flex: 1 1 45%; 
         padding: 0.75rem;
         font-size: 0.85rem;
       }
@@ -482,12 +484,14 @@
       <button id="testButton" class="test-button bg-yellow-500 text-black">Test Single Check</button>
       <button id="startButton" class="bg-blue-500 text-white">Start Checking</button>
       <button id="stopButton" class="bg-red-500 text-white hidden">Stop Checking</button>
+      
       <button id="testEmailButton" class="bg-green-500 text-white">Test Email</button>
       <button id="testDiscordButton" class="bg-purple-500 text-white">Test Discord</button>
       <button id="testAlertsButton" class="bg-green-500 text-white">Test All Alerts</button>
+
       <button id="emailToggleButton" class="email-toggle-button active bg-green-500 text-white">Deactivate Email Alerts</button>
       <button id="webhookToggleButton" class="webhook-toggle-button inactive bg-gray-500 text-white">Activate Discord Alerts</button>
-    </div>
+      </div>
     <div class="status-display">
       <p><strong>Status:</strong> <span id="statusText">Waiting...</span></p>
       <p><strong>Last checked:</strong> <span id="lastChecked">Never</span></p>
