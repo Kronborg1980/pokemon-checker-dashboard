@@ -623,7 +623,7 @@
           try {
             const date = new Date(data.lastChecked);
             if (!isNaN(date.getTime())) {
-              lastChecked.textContent = date.toLocaleTimeString(undefined, BROWSER_TIME_OPTIONS);
+              lastChecked.textContent = date.toLocaleTimeString('en-GB', BROWSER_TIME_OPTIONS);
             } else {
               lastChecked.textContent = data.lastChecked + " (Time Zone Sync Error)";
             }
