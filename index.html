@@ -4,11 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pokémon Center Shop Access Checker</title>
-  <!-- === CACHE PREVENTION HEADER === -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <!-- ==================================================================== -->
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="shortcut icon" href="favicon.png"> 
   <style>
@@ -455,7 +453,6 @@
       <div id="emailFeedback" class="status-feedback"></div>
     </div>
     
-    <!-- UPDATED DISCORD SECTION FOR MULTIPLE WEBHOOKS -->
     <div class="section">
       <label>Discord Webhooks (multiple supported):</label>
       <button id="addPokezonanWebhookButton" class="add-webhook-button bg-purple-500 text-white">Add Pokezonan Webhook</button>
@@ -473,13 +470,11 @@
     </div>
     
     <div class="section">
-      <!-- SLIDER FIX HTML START -->
       <label>Check every: <span id="frequencyValue" class="font-semibold">10</span> minutes</label>
       <div class="frequency-range">
           <input type="range" id="frequencySlider" min="1" max="60" value="10">
       </div>
-      <!-- SLIDER FIX HTML END -->
-    </div>
+      </div>
     <div class="section">
       <label>Auto-redirect on queue?</label>
       <div class="checkbox-group">
@@ -488,15 +483,14 @@
       </div>
     </div>
     <div class="button-group">
-      <!-- UPDATED BUTTON ORDER (Cleaned up) -->
       <button id="testButton" class="test-button bg-yellow-500 text-black">Test Single Check</button>
       <button id="startButton" class="bg-blue-500 text-white">Start Checking</button>
       <button id="stopButton" class="bg-red-500 text-white hidden">Stop Checking</button>
       
-      <!-- Test All Alerts (Unified Testing Button) -->
+      <button id="testEmailButton" class="bg-green-500 text-white">Test Email</button>
+      <button id="testDiscordButton" class="bg-purple-500 text-white">Test Discord</button>
       <button id="testAlertsButton" class="bg-green-500 text-white">Test All Alerts</button>
-      
-      <!-- Alert Toggles -->
+
       <button id="emailToggleButton" class="email-toggle-button active bg-green-500 text-white">Deactivate Email Alerts</button>
       <button id="webhookToggleButton" class="webhook-toggle-button inactive bg-gray-500 text-white">Activate Discord Alerts</button>
     </div>
