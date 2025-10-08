@@ -397,8 +397,7 @@
         width: 60px;
       }
       .button-group button {
-        /* On small screens, force two buttons per row */
-        flex: 1 1 45%; 
+        flex: 1 1 45%; /* Allows buttons to wrap and occupy half the space */
         padding: 0.75rem;
         font-size: 0.85rem;
       }
@@ -491,7 +490,7 @@
 
       <button id="emailToggleButton" class="email-toggle-button active bg-green-500 text-white">Deactivate Email Alerts</button>
       <button id="webhookToggleButton" class="webhook-toggle-button inactive bg-gray-500 text-white">Activate Discord Alerts</button>
-      </div>
+    </div>
     <div class="status-display">
       <p><strong>Status:</strong> <span id="statusText">Waiting...</span></p>
       <p><strong>Last checked:</strong> <span id="lastChecked">Never</span></p>
