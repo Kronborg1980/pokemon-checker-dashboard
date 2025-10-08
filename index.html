@@ -1,3 +1,6 @@
+ddd
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -655,6 +658,7 @@
 
     async function fetchStatus() {
         try {
+            // NOTE: This fetch can fail due to Cloudflare limits or timeouts (ERR_CONNECTION_CLOSED)
             const response = await fetch(`${WORKER_API_URL}/status`);
             if (!response.ok) throw new Error('Failed to fetch status from Worker');
 
@@ -676,11 +680,11 @@
                     if (!isNaN(date.getTime())) {
                         lastChecked.textContent = date.toLocaleTimeString(undefined, BROWSER_TIME_OPTIONS);
                     } else {
-                        // If parsing failed (shouldn't happen with ISO string), show the raw string and a warning
-                         lastChecked.textContent = data.lastChecked + " (Time Zone Sync Error)";
+                        // If parsing failed, it means the KV still holds old data.
+                         lastChecked.textContent = "Error: Please clear KV/cache (" + data.lastChecked + ")";
                     }
                 } catch (e) {
-                    lastChecked.textContent = data.lastChecked + " (Time Error)";
+                    lastChecked.textContent = "Error: Date Parse Failure";
                     console.error("Failed to parse date from worker:", e);
                 }
             } else {
@@ -744,7 +748,7 @@
             frequencyValue.textContent = currentFrequency;
 
         } catch (error) {
-            log(`Error connecting to Worker: ${error.message}. Check Worker URL and status.`);
+            log(`Error connecting to Worker: Failed to fetch. Check Worker URL and status. (Network Error)`);
             statusText.textContent = 'Worker Disconnected';
             statusText.classList.add('text-red-500');
             stopLocalTimer();
@@ -762,7 +766,7 @@
             log(data.message);
             await fetchStatus();
         } catch (error) {
-            log(`Error controlling Worker: ${error.message}`);
+            log(`Error controlling Worker: Failed to fetch. (Network Error)`);
         }
     }
 
@@ -786,12 +790,12 @@
             await fetchStatus();
             return true;
         } catch (error) {
-            log(`Error saving settings: ${error.message}`);
+            log(`Error saving settings: Failed to fetch. (Network Error)`);
             return false;
         }
     }
 
-    // --- Alerting Functions ---
+    // --- Alerting Functions (No changes) ---
 
     async function sendEmail(status, details, recipientEmails) {
         if (!emailNotificationsEnabled) {
@@ -845,12 +849,12 @@
                 throw new Error(`Worker responded with status ${response.status}`);
             }
         } catch (error) {
-            log(`Error sending Discord test: ${error.message}`);
+            log(`Error sending Discord test: Failed to fetch. (Network Error)`);
             alert('Failed to send Discord test. Check Worker console for errors.');
         }
     }
 
-    // --- UI Management ---
+    // --- UI Management (No changes) ---
 
     function updateEmailListUI(emails) {
         submittedEmailsList.innerHTML = '';
@@ -898,7 +902,7 @@
     }
 
 
-    // --- Event Listeners ---
+    // --- Event Listeners (No changes) ---
 
     document.addEventListener('DOMContentLoaded', async () => {
         // 1. Initial Status Fetch and Start Polling
