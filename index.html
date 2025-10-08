@@ -1017,7 +1017,7 @@
         
         // 7. Test Alert Buttons
         
-        // **UPDATED TEST EMAIL LOGIC** (Separated, Humorous Content)
+        // **Test Email Button** (Directly linked)
         document.getElementById('testEmailButton').addEventListener('click', () => {
             if (!currentEmails.length || !emailNotificationsEnabled) {
                 alert('Add/Activate email alerts first.');
@@ -1032,10 +1032,10 @@
             alert('Test email(s) sent! Check your inbox(es) or spam/junk folder.');
         });
         
-        // **UPDATED TEST DISCORD LOGIC** (Now just calls the core function)
+        // **Test Discord Button** (Directly linked)
         document.getElementById('testDiscordButton').addEventListener('click', testDiscord);
         
-        // **UPDATED TEST ALL ALERTS LOGIC** (Consolidated, Humorous Content)
+        // **Test All Alerts Button** (Consolidated)
         testAlertsButton.addEventListener('click', () => {
             let alerted = false;
             
@@ -1044,13 +1044,13 @@
 
             if (currentEmails.length && emailNotificationsEnabled) {
                 log('Sending test email alert...');
-                sendEmail(emailTestStatus, emailTestDetails, currentEmails); // Email is sent via FE with custom content
+                sendEmail(emailTestStatus, emailTestDetails, currentEmails); 
                 alerted = true;
             }
             
             if (currentWebhooks.length > 0 && discordNotificationsEnabled) {
                 log('Sending test Discord alert...');
-                testDiscord(); // Discord relies on the worker's hardcoded humorous message
+                testDiscord(); 
                 alerted = true;
             }
             
