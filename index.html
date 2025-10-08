@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -656,7 +655,6 @@
 
     async function fetchStatus() {
         try {
-            // NOTE: This fetch can fail due to Cloudflare limits or timeouts (ERR_CONNECTION_CLOSED)
             const response = await fetch(`${WORKER_API_URL}/status`);
             if (!response.ok) throw new Error('Failed to fetch status from Worker');
 
@@ -678,11 +676,11 @@
                     if (!isNaN(date.getTime())) {
                         lastChecked.textContent = date.toLocaleTimeString(undefined, BROWSER_TIME_OPTIONS);
                     } else {
-                        // If parsing failed, it means the KV still holds old data.
-                         lastChecked.textContent = "Error: Please clear KV/cache (" + data.lastChecked + ")";
+                        // If parsing failed (shouldn't happen with ISO string), show the raw string and a warning
+                         lastChecked.textContent = data.lastChecked + " (Time Zone Sync Error)";
                     }
                 } catch (e) {
-                    lastChecked.textContent = "Error: Date Parse Failure";
+                    lastChecked.textContent = data.lastChecked + " (Time Error)";
                     console.error("Failed to parse date from worker:", e);
                 }
             } else {
@@ -729,16 +727,18 @@
             discordNotificationsEnabled = settings.discordNotificationsEnabled === true;
             updateWebhookListUI(currentWebhooks);
 
-            // Discord Toggle
-            if (discordNotificationsEnabled) {
-                webhookToggleButton.textContent = 'Deactivate Discord Alerts';
-                webhookToggleButton.classList.remove('inactive');
-                webhookToggleButton.classList.add('active');
+            // Discord Toggle - This is the crucial fix!
+            emailNotificationsEnabled = settings.emailNotificationsEnabled === true;
+            if (emailNotificationsEnabled) {
+                emailToggleButton.textContent = 'Deactivate Email Alerts';
+                emailToggleButton.classList.remove('inactive');
+                emailToggleButton.classList.add('active');
             } else {
-                webhookToggleButton.textContent = 'Activate Discord Alerts';
-                webhookToggleButton.classList.remove('active');
-                webhookToggleButton.classList.add('inactive');
+                emailToggleButton.textContent = 'Activate Email Alerts';
+                emailToggleButton.classList.remove('active');
+                emailToggleButton.classList.add('inactive');
             }
+            // End Discord Toggle Fix
 
             // Frequency
             currentFrequency = settings.frequency || 10;
@@ -793,7 +793,7 @@
         }
     }
 
-    // --- Alerting Functions (No changes) ---
+    // --- Alerting Functions ---
 
     async function sendEmail(status, details, recipientEmails) {
         if (!emailNotificationsEnabled) {
@@ -852,7 +852,7 @@
         }
     }
 
-    // --- UI Management (No changes) ---
+    // --- UI Management ---
 
     function updateEmailListUI(emails) {
         submittedEmailsList.innerHTML = '';
@@ -900,7 +900,7 @@
     }
 
 
-    // --- Event Listeners (No changes) ---
+    // --- Event Listeners ---
 
     document.addEventListener('DOMContentLoaded', async () => {
         // 1. Initial Status Fetch and Start Polling
