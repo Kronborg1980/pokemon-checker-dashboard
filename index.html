@@ -10,400 +10,95 @@
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="shortcut icon" href="favicon.png">
   <style>
-    .bg-gray-100 { background-color: #f3f4f6; }
-    .bg-white { background-color: #ffffff; }
-    .bg-blue-500 { background-color: #3b82f6; }
-    .bg-red-500 { background-color: #ef4444; }
-    .bg-green-500 { background-color: #10b981; }
-    .bg-purple-500 { background-color: #8b5cf6; }
-    .bg-gray-500 { background-color: #6b7280; }
-    .text-gray-600 { color: #4b5563; }
-    .text-gray-500 { color: #6b7280; }
-    .text-red-500 { color: #ef4444; }
-    .text-green-500 { color: #22c55e; }
-    .text-orange-500 { color: #f97316; }
-    .text-purple-500 { color: #8b5cf6; }
-    .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
-    .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
-    .text-2xl { font-size: 1.5rem; line-height: 2rem; }
-    .font-bold { font-weight: 700; }
-    .font-semibold { font-weight: 600; }
-    .p-6 { padding: 1.5rem; }
-    .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
-    .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
-    .mt-2 { margin-top: 0.5rem; }
-    .mb-2 { margin-bottom: 0.5rem; }
-    .w-full { width: 100%; }
-    .max-w-md { max-width: 28rem; }
-    .rounded { border-radius: 0.25rem; }
-    .rounded-lg { border-radius: 0.5rem; }
-    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
-    .border { border-width: 1px; }
-    .border-gray-300 { border-color: #d1d5db; }
-    .flex { display: flex; }
-    .items-center { align-items: center; }
-    .justify-center { justify-content: center; }
-    .min-h-screen { min-height: 100vh; }
-    .text-center { text-align: center; }
-    .hidden { display: none; }
-    .hover\:bg-blue-600:hover { background-color: #2563eb; }
-    .hover\:bg-red-600:hover { background-color: #dc2626; }
-    .hover\:bg-green-600:hover { background-color: #059669; }
-    .hover\:bg-purple-600:hover { background-color: #7c3aed; }
-    .hover\:bg-gray-600:hover { background-color: #4b5563; }
-    body {
-      font-family: 'Nunito', sans-serif;
-      background: linear-gradient(to bottom, #0a0a0a, #1a1a2e, #16213e, #0f3460);
-      color: #ffffff;
-      position: relative;
-      overflow-y: auto;
-      scrollbar-width: thin;
-      scrollbar-color: #00ffff #1a1a2e;
-      min-height: 100vh;
-      padding: 20px;
-    }
-    body::-webkit-scrollbar {
-      width: 8px;
-    }
-    body::-webkit-scrollbar-track {
-      background: #1a1a2e;
-    }
-    body::-webkit-scrollbar-thumb {
-      background: #00ffff;
-      border-radius: 4px;
-    }
-    body::-webkit-scrollbar-thumb:hover {
-      background: #00cccc;
-    }
-    .main-container {
-      background: rgba(10, 10, 10, 0.9);
-      border: 2px solid #00ffff;
-      box-shadow: 0 0 20px #00ffff, inset 0 0 20px rgba(0, 255, 255, 0.1);
-      border-radius: 10px;
-      padding: 2rem;
-      max-width: 37rem;
-      min-height: 80vh;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1.5rem;
-      padding: 1rem;
-      background: rgba(0, 255, 255, 0.1);
-      border: 1px solid #00ffff;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
-    }
-    .header h1 {
-      font-size: 1.25rem;
-      font-weight: bold;
-      color: #00ffff;
-      text-shadow: 0 0 10px #00ffff;
-      margin: 0;
-      flex: 1;
-      text-align: center;
-    }
-    .pokemon-header-sprite {
-      width: 72px;
-      height: auto;
-      filter: drop-shadow(0 0 10px #00ffff);
-      z-index: 5;
-    }
-    .magikarp-header {
-      animation: bob 2s infinite ease-in-out;
-    }
-    .cubone-header {
-      animation: hop 3s infinite ease-in-out;
-    }
-    @keyframes bob {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-    @keyframes hop {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-15px) rotate(5deg); }
-    }
-    .section {
-      margin-bottom: 1.5rem;
-      padding: 1rem;
-      background: rgba(26, 26, 46, 0.5);
-      border: 1px solid #00ffff;
-      border-radius: 8px;
-      box-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
-    }
-    .section label {
-      display: block;
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: #00ffff;
-      margin-bottom: 0.5rem;
-    }
-    input[type="email"], input[type="range"], input[type="url"] {
-      width: 100%;
-      padding: 0.75rem;
-      border: 1px solid #00ffff;
-      border-radius: 4px;
-      background: rgba(10, 10, 10, 0.8);
-      color: #ffffff;
-      box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
-      transition: box-shadow 0.3s ease;
-    }
-    input[type="email"]:focus, input[type="url"]:focus {
-      outline: none;
-      box-shadow: 0 0 10px #00ffff;
-    }
-    input[type="range"] {
-      box-sizing: border-box;
-      padding: 0;
-      height: 10px;
-      background: rgba(0, 255, 255, 0.2);
-      border-radius: 5px;
-      border: none;
-      box-shadow: none;
-      margin: 0;
-      -webkit-appearance: none;
-      appearance: none;
-      cursor: pointer;
-    }
-    input[type="range"]::-webkit-slider-thumb {
-      appearance: none;
-      width: 20px;
-      height: 20px;
-      background: #00ffff;
-      border-radius: 50%;
-      cursor: pointer;
-      box-shadow: 0 0 8px #00ffff;
-      margin-top: -5px;
-    }
-    input[type="range"]::-moz-range-thumb {
-      width: 20px;
-      height: 20px;
-      background: #00ffff;
-      border-radius: 50%;
-      cursor: pointer;
-      box-shadow: 0 0 8px #00ffff;
-      border: none;
-    }
-    button {
-      width: 100%;
-      padding: 1rem;
-      border: none;
-      border-radius: 4px;
-      background: linear-gradient(45deg, #00ffff, #0080ff);
-      color: #000;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-      transition: all 0.3s ease;
-      white-space: normal;
-      text-align: center;
-    }
-    button:hover {
-      box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
-      transform: translateY(-2px);
-    }
-    button.active {
-      background: linear-gradient(45deg, #10b981, #059669);
-      box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
-    }
-    button.inactive {
-      background: #6b7280;
-      box-shadow: 0 0 10px rgba(107, 114, 128, 0.5);
-    }
-    .email-input-group {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.5rem;
-    }
-    .email-input-group input {
-      flex: 1;
-    }
-    .email-input-group button {
-      flex-shrink: 0;
-      width: auto;
-      padding: 0.5rem 1rem;
-      background: linear-gradient(45deg, #10b981, #059669);
-    }
-    .email-input-group button:hover {
-      box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
-    }
-    .submitted-emails-list, .submitted-webhooks-list {
-      margin-top: 0.5rem;
-    }
-    .submitted-emails-list ul, .submitted-webhooks-list ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .submitted-emails-list li, .submitted-webhooks-list li {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.5rem;
-      padding: 0.5rem;
-      background: rgba(107, 114, 128, 0.5);
-      border: 1px solid #00ffff;
-      box-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
-      word-break: break-word;
-    }
-    .submitted-emails-list li span, .submitted-webhooks-list li span {
-      flex: 1;
-      font-size: 0.875rem;
-      color: #b0b0b0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .submitted-emails-list li button, .submitted-webhooks-list li button {
-      flex-shrink: 0;
-      width: auto;
-      padding: 0.5rem 1rem;
-      font-size: 0.875rem;
-      background: linear-gradient(45deg, #ef4444, #dc2626);
-      box-shadow: 0 0 5px rgba(239, 68, 68, 0.5);
-    }
-    .submitted-emails-list li button:hover, .submitted-webhooks-list li button:hover {
-      box-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
-      transform: translateY(-1px);
-    }
-    .no-emails-message, .no-webhooks-message {
-      font-size: 0.875rem;
-      color: #00ffff;
-      text-align: center;
-      padding: 0.5rem;
-      background: rgba(0, 255, 255, 0.1);
-      border: 1px solid #00ffff;
-      border-radius: 4px;
-      box-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
-      display: none;
-    }
-    .no-emails-message.show, .no-webhooks-message.show {
-      display: block;
-    }
-    .checkbox-group {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .checkbox-group input[type="checkbox"] {
-      width: auto;
-      accent-color: #00ffff;
-    }
-    .status-display {
-      background: rgba(26, 26, 46, 0.5);
-      border: 1px solid #00ffff;
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-    }
-    .status-display p {
-      margin: 0.25rem 0;
-      font-size: 0.875rem;
-    }
-    .status-display #statusDetails {
-      display: block;
-      word-break: break-all;
-    }
+    /* MODIFIED: .live-log no longer has 'flex-direction: column-reverse' to show newest logs on top */
     .live-log {
-      flex: 1;
-      min-height: 150px;
-      max-height: 250px;
-      overflow-y: auto;
-      background: rgba(10, 10, 10, 0.8);
-      border: 1px solid #00ffff;
-      border-radius: 8px;
-      padding: 1rem;
-      margin-top: auto;
-      font-size: 0.75rem;
-      font-family: 'Courier New', monospace;
-      box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
-      display: flex;
-      flex-direction: column-reverse;
-      scrollbar-width: thin;
+      flex: 1; min-height: 150px; max-height: 250px; overflow-y: auto; background: rgba(10, 10, 10, 0.8);
+      border: 1px solid #00ffff; border-radius: 8px; padding: 1rem; margin-top: auto; font-size: 0.75rem;
+      font-family: 'Courier New', monospace; box-shadow: 0 0 5px rgba(0, 255, 255, 0.3); scrollbar-width: thin;
       scrollbar-color: #00ffff #1a1a2e;
     }
-    .live-log p {
-      margin: 0.25rem 0;
-      word-wrap: break-word;
-      color: #ffffff;
+    .bg-gray-100 { background-color: #f3f4f6; } .bg-white { background-color: #ffffff; } .bg-blue-500 { background-color: #3b82f6; }
+    .bg-red-500 { background-color: #ef4444; } .bg-green-500 { background-color: #10b981; } .bg-purple-500 { background-color: #8b5cf6; }
+    .bg-gray-500 { background-color: #6b7280; } .text-gray-600 { color: #4b5563; } .text-gray-500 { color: #6b7280; }
+    .text-red-500 { color: #ef4444; } .text-green-500 { color: #22c55e; } .text-orange-500 { color: #f97316; }
+    .text-purple-500 { color: #8b5cf6; } .text-lg { font-size: 1.125rem; line-height: 1.75rem; } .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+    .text-2xl { font-size: 1.5rem; line-height: 2rem; } .font-bold { font-weight: 700; } .font-semibold { font-weight: 600; }
+    .p-6 { padding: 1.5rem; } .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; } .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+    .mt-2 { margin-top: 0.5rem; } .mb-2 { margin-bottom: 0.5rem; } .w-full { width: 100%; } .max-w-md { max-width: 28rem; }
+    .rounded { border-radius: 0.25rem; } .rounded-lg { border-radius: 0.5rem; } .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+    .border { border-width: 1px; } .border-gray-300 { border-color: #d1d5db; } .flex { display: flex; } .items-center { align-items: center; }
+    .justify-center { justify-content: center; } .min-h-screen { min-height: 100vh; } .text-center { text-align: center; }
+    .hidden { display: none; } .hover\:bg-blue-600:hover { background-color: #2563eb; } .hover\:bg-red-600:hover { background-color: #dc2626; }
+    .hover\:bg-green-600:hover { background-color: #059669; } .hover\:bg-purple-600:hover { background-color: #7c3aed; }
+    .hover\:bg-gray-600:hover { background-color: #4b5563; }
+    body { font-family: 'Nunito', sans-serif; background: linear-gradient(to bottom, #0a0a0a, #1a1a2e, #16213e, #0f3460); color: #ffffff;
+      position: relative; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #00ffff #1a1a2e; min-height: 100vh; padding: 20px;
     }
-    .status-feedback {
-      color: #00ff00;
-      font-size: 0.875rem;
-      margin-top: 0.5rem;
-      text-align: center;
-      opacity: 0;
-      transition: opacity 0.5s ease;
+    body::-webkit-scrollbar { width: 8px; } body::-webkit-scrollbar-track { background: #1a1a2e; }
+    body::-webkit-scrollbar-thumb { background: #00ffff; border-radius: 4px; } body::-webkit-scrollbar-thumb:hover { background: #00cccc; }
+    .main-container { background: rgba(10, 10, 10, 0.9); border: 2px solid #00ffff; box-shadow: 0 0 20px #00ffff, inset 0 0 20px rgba(0, 255, 255, 0.1);
+      border-radius: 10px; padding: 2rem; max-width: 37rem; min-height: 80vh; display: flex; flex-direction: column; position: relative;
+      margin-left: auto; margin-right: auto;
     }
-    .status-feedback.show {
-      opacity: 1;
+    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; padding: 1rem; background: rgba(0, 255, 255, 0.1);
+      border: 1px solid #00ffff; border-radius: 8px; box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
     }
-    .button-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
+    .header h1 { font-size: 1.25rem; font-weight: bold; color: #00ffff; text-shadow: 0 0 10px #00ffff; margin: 0; flex: 1; text-align: center; }
+    .pokemon-header-sprite { width: 72px; height: auto; filter: drop-shadow(0 0 10px #00ffff); z-index: 5; }
+    .magikarp-header { animation: bob 2s infinite ease-in-out; }
+    .cubone-header { animation: hop 3s infinite ease-in-out; }
+    @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    @keyframes hop { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-15px) rotate(5deg); } }
+    .section { margin-bottom: 1.5rem; padding: 1rem; background: rgba(26, 26, 46, 0.5); border: 1px solid #00ffff; border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
     }
-    .button-group button {
-      flex: 1 1 30%;
-      min-width: 120px;
+    .section label { display: block; font-size: 0.875rem; font-weight: 600; color: #00ffff; margin-bottom: 0.5rem; }
+    input[type="email"], input[type="url"] { width: 100%; padding: 0.75rem; border: 1px solid #00ffff; border-radius: 4px;
+      background: rgba(10, 10, 10, 0.8); color: #ffffff; box-shadow: 0 0 5px rgba(0, 255, 255, 0.3); transition: box-shadow 0.3s ease;
     }
-    @media (max-width: 600px) {
-      body {
-        padding: 10px;
-      }
-      .main-container {
-        max-width: 95%;
-        min-height: 95vh;
-        padding: 1rem;
-      }
-      .header h1 {
-        font-size: 1.1rem;
-        line-height: 1.2;
-      }
-      .pokemon-header-sprite {
-        width: 60px;
-      }
-      .button-group button {
-        flex: 1 1 45%;
-        padding: 0.75rem;
-        font-size: 0.85rem;
-      }
-      .button-group .alert-toggle-row button {
-        flex: 1 1 48%;
-      }
-      .live-log {
-        font-size: 0.7rem;
-      }
+    input[type="email"]:focus, input[type="url"]:focus { outline: none; box-shadow: 0 0 10px #00ffff; }
+    button { width: 100%; padding: 1rem; border: none; border-radius: 4px; background: linear-gradient(45deg, #00ffff, #0080ff);
+      color: #000; font-weight: 600; cursor: pointer; box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); transition: all 0.3s ease;
+      white-space: normal; text-align: center;
     }
-    .success-explosion {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 1000;
-      opacity: 0;
+    button:hover { box-shadow: 0 0 20px rgba(0, 255, 255, 0.8); transform: translateY(-2px); }
+    button.active { background: linear-gradient(45deg, #10b981, #059669); box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+    button.inactive { background: #6b7280; box-shadow: 0 0 10px rgba(107, 114, 128, 0.5); }
+    .email-input-group { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+    .email-input-group input { flex: 1; }
+    .email-input-group button { flex-shrink: 0; width: auto; padding: 0.5rem 1rem; background: linear-gradient(45deg, #10b981, #059669); }
+    .email-input-group button:hover { box-shadow: 0 0 10px rgba(16, 185, 129, 0.8); }
+    .submitted-emails-list ul, .submitted-webhooks-list ul { list-style: none; padding: 0; margin: 0; }
+    .submitted-emails-list li, .submitted-webhooks-list li { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; padding: 0.5rem;
+      background: rgba(107, 114, 128, 0.5); border: 1px solid #00ffff; box-shadow: 0 0 5px rgba(0, 255, 255, 0.2); word-break: break-word;
     }
-    .success-explosion.show {
-      opacity: 1;
-      animation: explode 1s ease-out forwards;
+    .submitted-emails-list li span, .submitted-webhooks-list li span { flex: 1; font-size: 0.875rem; color: #b0b0b0; overflow: hidden;
+      text-overflow: ellipsis; white-space: nowrap;
     }
-    @keyframes explode {
-      0% { transform: scale(0); }
-      50% { transform: scale(1.2); }
-      100% { transform: scale(1); opacity: 0; }
+    .submitted-emails-list li button, .submitted-webhooks-list li button { flex-shrink: 0; width: auto; padding: 0.5rem 1rem; font-size: 0.875rem;
+      background: linear-gradient(45deg, #ef4444, #dc2626); box-shadow: 0 0 5px rgba(239, 68, 68, 0.5);
+    }
+    .submitted-emails-list li button:hover, .submitted-webhooks-list li button:hover { box-shadow: 0 0 10px rgba(239, 68, 68, 0.8); transform: translateY(-1px); }
+    .no-emails-message, .no-webhooks-message { font-size: 0.875rem; color: #00ffff; text-align: center; padding: 0.5rem; background: rgba(0, 255, 255, 0.1);
+      border: 1px solid #00ffff; border-radius: 4px; box-shadow: 0 0 5px rgba(0, 255, 255, 0.2); display: none;
+    }
+    .no-emails-message.show, .no-webhooks-message.show { display: block; }
+    .status-display { background: rgba(26, 26, 46, 0.5); border: 1px solid #00ffff; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;
+      box-shadow: 0 0 5px rgba(0, 255, 255, 0.2); word-wrap: break-word; overflow-wrap: break-word;
+    }
+    .status-display p { margin: 0.25rem 0; font-size: 0.875rem; }
+    .status-display #statusDetails { display: block; word-break: break-all; }
+    .live-log p { margin: 0.25rem 0; word-wrap: break-word; color: #ffffff; }
+    .status-feedback { color: #00ff00; font-size: 0.875rem; margin-top: 0.5rem; text-align: center; opacity: 0; transition: opacity 0.5s ease; }
+    .status-feedback.show { opacity: 1; }
+    .button-group { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .button-group button { flex: 1 1 30%; min-width: 120px; }
+    @media (max-width: 600px) { body { padding: 10px; }
+      .main-container { max-width: 95%; min-height: 95vh; padding: 1rem; }
+      .header h1 { font-size: 1.1rem; line-height: 1.2; }
+      .pokemon-header-sprite { width: 60px; }
+      .button-group button { flex: 1 1 45%; padding: 0.75rem; font-size: 0.85rem; }
+      .live-log { font-size: 0.7rem; }
     }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
@@ -415,6 +110,7 @@
       <h1>Pokémon Center Shop Access Checker<br>Made By Kronborg</h1>
       <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/104.png" alt="Cubone" class="pokemon-header-sprite cubone-header">
     </div>
+
     <div class="section">
       <label>Emails for alerts:</label>
       <div id="emailInputsContainer">
@@ -429,6 +125,7 @@
       </div>
       <div id="emailFeedback" class="status-feedback"></div>
     </div>
+
     <div class="section">
       <label>Discord Webhooks (multiple supported):</label>
       <button id="addPokezonanWebhookButton" class="add-webhook-button bg-purple-500 text-white">Add Pokezonan Webhook</button>
@@ -444,22 +141,9 @@
       </div>
       <div id="webhookFeedback" class="status-feedback"></div>
     </div>
-    <div class="section">
-      <label>Check every: <span id="frequencyValue" class="font-semibold">10</span> minutes</label>
-      <div class="frequency-range">
-        <input type="range" id="frequencySlider" min="1" max="60" value="10">
-      </div>
-    </div>
-    <div class="section">
-      <label>Auto-redirect on queue?</label>
-      <div class="checkbox-group">
-        <input type="checkbox" id="autoRedirect" checked>
-        <label for="autoRedirect" class="text-sm">Yes, redirect to Pokémon Center if queue detected (Note: Worker is 24/7, this is limited functionality)</label>
-      </div>
-    </div>
+    
     <div class="button-group">
       <button id="testButton" class="test-button bg-yellow-500 text-black">Test Single Check</button>
-      
       <button id="testEmailButton" class="bg-green-500 text-white">Test Email</button>
       <button id="testDiscordButton" class="bg-purple-500 text-white">Test Discord</button>
       <button id="startButton" class="bg-blue-500 text-white">Start Checking</button>
@@ -467,6 +151,7 @@
       <button id="emailToggleButton" class="email-toggle-button active bg-green-500 text-white">Deactivate Email Alerts</button>
       <button id="webhookToggleButton" class="webhook-toggle-button inactive bg-gray-500 text-white">Activate Discord Alerts</button>
     </div>
+
     <div class="status-display">
       <p><strong>Status:</strong> <span id="statusText">Waiting...</span></p>
       <p><strong>Previous Status:</strong> <span id="previousStatusText">None</span></p>
@@ -475,37 +160,18 @@
       <p><strong>Next Check In:</strong> <span id="nextCheckIn">N/A</span></p>
       <p><strong>Details:</strong> <span id="statusDetails">None</span></p>
     </div>
+    
     <div id="liveLog" class="live-log">
       <p>[Startup] Dashboard initialized. Awaiting status from Worker. 🚀</p>
     </div>
   </div>
-  <div id="successExplosion" class="success-explosion hidden"></div>
-  <audio id="beepSound">
-    <source src="https://www.soundjay.com/buttons/beep-01a.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
-  </audio>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <script type="text/javascript">
-    var gk_isXlsx = false;
-    var gk_xlsxFileLookup = {};
-    var gk_fileData = {};
-    function filledCell(cell) {
-      return cell !== '' && cell != null;
-    }
-    function loadFileData(filename) {
-      return gk_fileData[filename] || "";
-    }
-  </script>
+
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4.4.1/dist/email.min.js"></script>
   <script>
-    if (typeof emailjs === 'undefined') {
-      console.error('EmailJS failed to load. Email functionality is unavailable.');
-    } else {
-      emailjs.init({
-        publicKey: "8w7eu6mrg3lRl6ta3"
-      });
-    }
+    emailjs.init({ publicKey: "8w7eu6mrg3lRl6ta3" });
+
     const WORKER_API_URL = 'https://pokemon-checker-api.kronborgnielsen.workers.dev';
+    // Element selectors
     const statusText = document.getElementById('statusText');
     const previousStatusText = document.getElementById('previousStatusText');
     const lastChecked = document.getElementById('lastChecked');
@@ -523,413 +189,208 @@
     const submitWebhookButton = document.getElementById('submitWebhookButton');
     const submittedWebhooksList = document.getElementById('submittedWebhooksList');
     const webhookFeedback = document.getElementById('webhookFeedback');
-    const beepSound = document.getElementById('beepSound');
     const runTime = document.getElementById('runTime');
     const emailInputsContainer = document.getElementById('emailInputsContainer');
     const submittedEmailsList = document.getElementById('submittedEmailsList');
     const emailFeedback = document.getElementById('emailFeedback');
-    const frequencySlider = document.getElementById('frequencySlider');
-    const frequencyValue = document.getElementById('frequencyValue');
     const liveLog = document.getElementById('liveLog');
-    const autoRedirectCheckbox = document.getElementById('autoRedirect');
     const noEmailsMessage = document.getElementById('noEmailsMessage');
     const noWebhooksMessage = document.getElementById('noWebhooksMessage');
-    let emailNotificationsEnabled = true;
-    let discordNotificationsEnabled = false;
+
     let currentWebhooks = [];
     let currentEmails = [];
-    let currentFrequency = 10;
     let localTimerInterval = null;
     let workerStartTime = null;
+    
     const POKEZONAN_WEBHOOK_URL = 'https://discord.com/api/webhooks/1418654823745716436/vuMKu1s095Cq3BfU06OF_Z_mwxG39zHppHJ3c4BX5X38WuJFWPGhIZdopWTEEXlophiN';
-    const BROWSER_TIME_OPTIONS = {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false,
-      timeZoneName: 'short'
-    };
+    const BROWSER_TIME_OPTIONS = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZoneName: 'short' };
+
     function log(message) {
-      const timestamp = new Date().toLocaleTimeString(undefined, {hour: '2-digit', minute: '2-digit'});
-      const logEntry = document.createElement('p');
-      logEntry.textContent = `[${timestamp}] ${message}`;
-      liveLog.prepend(logEntry);
-      console.log(message);
+        const timestamp = new Date().toLocaleTimeString(undefined, {hour: '2-digit', minute: '2-digit'});
+        const logEntry = document.createElement('p');
+        logEntry.textContent = `[${timestamp}] ${message}`;
+        liveLog.prepend(logEntry); // Prepend adds the new log to the top
     }
-    function updateNoEmailsMessage() {
-      noEmailsMessage.classList.toggle('show', submittedEmailsList.children.length === 0);
-    }
-    function updatePokezonanButtonVisibility() {
-      const isPokezonanAdded = currentWebhooks.includes(POKEZONAN_WEBHOOK_URL);
-      addPokezonanWebhookButton.classList.toggle('hidden', isPokezonanAdded);
-    }
-    function updateNoWebhooksMessage() {
-      noWebhooksMessage.classList.toggle('show', submittedWebhooksList.children.length === 0);
-      if (submittedWebhooksList.children.length > 0) {
-        webhookToggleButton.classList.remove('hidden');
-      } else {
-        webhookToggleButton.classList.add('hidden');
-      }
-      updatePokezonanButtonVisibility();
-    }
+
     function showFeedback(feedbackElement, message) {
-      feedbackElement.textContent = message;
-      feedbackElement.classList.add('show');
-      setTimeout(() => {
-        feedbackElement.classList.remove('show');
-      }, 2000);
+        feedbackElement.textContent = message;
+        feedbackElement.classList.add('show');
+        setTimeout(() => feedbackElement.classList.remove('show'), 2000);
     }
-    function formatDuration(ms) {
-      if (typeof ms !== 'number' || ms < 0) return '0h 0m 0s';
-      const seconds = Math.floor(ms / 1000);
-      const hours = Math.floor(seconds / 3600);
-      const minutes = Math.floor((seconds % 3600) / 60);
-      const secs = seconds % 60;
-      return `${hours}h ${minutes}m ${secs}s`;
-    }
-    function isAvailableStatus(status) {
-      return status.includes('Available') || status.includes('active');
-    }
+    
     function updateSmoothRunTime() {
-      if (workerStartTime) {
-        const elapsed = Date.now() - workerStartTime;
-        runTime.textContent = formatDuration(elapsed);
-      }
+        if (workerStartTime) {
+            const elapsed = Date.now() - workerStartTime;
+            const seconds = Math.floor(elapsed / 1000);
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = seconds % 60;
+            runTime.textContent = `${h}h ${m}m ${s}s`;
+        }
     }
-    function startLocalTimer() {
-      if (!localTimerInterval) {
-        localTimerInterval = setInterval(updateSmoothRunTime, 1000);
-      }
-    }
-    function stopLocalTimer() {
-      if (localTimerInterval) {
-        clearInterval(localTimerInterval);
-        localTimerInterval = null;
-      }
-      workerStartTime = null;
-      runTime.textContent = '0h 0m 0s';
-    }
+
     async function fetchStatus() {
-      try {
-        const response = await fetch(`${WORKER_API_URL}/status`);
-        if (!response.ok) throw new Error('Failed to fetch status from Worker');
-        const data = await response.json();
-        statusText.textContent = data.statusText;
-        previousStatusText.textContent = data.previousStatusText || 'None';
-        const isShopAvailable = isAvailableStatus(data.statusText);
-        const isQueueOrCaptcha = data.statusText.includes('Queue') || data.statusText.includes('CAPTCHA');
-        statusText.classList.remove('text-green-500', 'text-red-500', 'text-orange-500');
-        statusText.classList.add(isShopAvailable ? 'text-green-500' : isQueueOrCaptcha ? 'text-orange-500' : 'text-red-500');
-        if (data.lastChecked && data.lastChecked !== 'Never') {
-          try {
-            const date = new Date(data.lastChecked);
-            if (!isNaN(date.getTime())) {
-              lastChecked.textContent = date.toLocaleTimeString('en-GB', BROWSER_TIME_OPTIONS);
+        try {
+            const response = await fetch(`${WORKER_API_URL}/status`);
+            if (!response.ok) throw new Error('Failed to fetch status from Worker');
+            const data = await response.json();
+            
+            statusText.textContent = data.statusText;
+            previousStatusText.textContent = data.previousStatusText || 'None';
+            lastChecked.textContent = (data.lastChecked && data.lastChecked !== 'Never') ? new Date(data.lastChecked).toLocaleTimeString('en-GB', BROWSER_TIME_OPTIONS) : data.lastChecked;
+            nextCheckInElement.textContent = data.nextCheckIn || 'N/A';
+            statusDetails.textContent = data.statusDetails;
+
+            if (data.isRunning) {
+                workerStartTime = data.startTime;
+                if (!localTimerInterval) localTimerInterval = setInterval(updateSmoothRunTime, 1000);
+                startButton.classList.add('hidden');
+                stopButton.classList.remove('hidden');
             } else {
-              lastChecked.textContent = data.lastChecked + " (Time Zone Sync Error)";
+                if (localTimerInterval) { clearInterval(localTimerInterval); localTimerInterval = null; }
+                workerStartTime = null;
+                runTime.textContent = '0h 0m 0s';
+                startButton.classList.remove('hidden');
+                stopButton.classList.add('hidden');
             }
-          } catch (e) {
-            lastChecked.textContent = data.lastChecked + " (Time Error)";
-            console.error("Failed to parse date from worker:", e);
-          }
-        } else {
-          lastChecked.textContent = data.lastChecked;
+
+            liveLog.innerHTML = '';
+            // MODIFIED: Loop through logs without reversing, appendChild will build the list with newest on top because of CSS change.
+            data.log.forEach(entry => {
+                const logEntry = document.createElement('p');
+                logEntry.textContent = entry;
+                liveLog.appendChild(logEntry);
+            });
+
+            const settings = data.settings || {};
+            updateEmailListUI(settings.emails || []);
+            updateWebhookListUI(settings.discordWebhooks || []);
+            updateToggleButton(emailToggleButton, settings.emailNotificationsEnabled, 'Email');
+            updateToggleButton(webhookToggleButton, settings.discordNotificationsEnabled, 'Discord');
+
+        } catch (error) {
+            log(`Error connecting to Worker: ${error.message}.`);
+            statusText.textContent = 'Worker Disconnected';
         }
-        nextCheckInElement.textContent = data.nextCheckIn || 'N/A';
-        statusDetails.textContent = data.statusDetails;
-        if (data.isRunning) {
-          workerStartTime = data.startTime;
-          startLocalTimer();
-        } else {
-          stopLocalTimer();
-        }
-        if (data.isRunning) {
-          startButton.classList.add('hidden');
-          stopButton.classList.remove('hidden');
-        } else {
-          startButton.classList.remove('hidden');
-          stopButton.classList.add('hidden');
-        }
-        liveLog.innerHTML = '';
-        data.log.reverse().forEach(entry => {
-          const logEntry = document.createElement('p');
-          logEntry.textContent = entry;
-          liveLog.appendChild(logEntry);
-        });
-        const settings = data.settings || {};
-        currentEmails = settings.emails || [];
-        updateEmailListUI(currentEmails);
-        currentWebhooks = settings.discordWebhooks || [];
-        discordNotificationsEnabled = settings.discordNotificationsEnabled === true;
-        updateWebhookListUI(currentWebhooks);
-        emailNotificationsEnabled = settings.emailNotificationsEnabled === true;
-        if (emailNotificationsEnabled) {
-          emailToggleButton.textContent = 'Deactivate Email Alerts';
-          emailToggleButton.classList.remove('inactive');
-          emailToggleButton.classList.add('active');
-        } else {
-          emailToggleButton.textContent = 'Activate Email Alerts';
-          emailToggleButton.classList.remove('active');
-          emailToggleButton.classList.add('inactive');
-        }
-        if (discordNotificationsEnabled) {
-          webhookToggleButton.textContent = 'Deactivate Discord Alerts';
-          webhookToggleButton.classList.remove('inactive');
-          webhookToggleButton.classList.add('active');
-        } else {
-          webhookToggleButton.textContent = 'Activate Discord Alerts';
-          webhookToggleButton.classList.remove('active');
-          webhookToggleButton.classList.add('inactive');
-        }
-        currentFrequency = settings.frequency || 10;
-        frequencySlider.value = currentFrequency;
-        frequencyValue.textContent = currentFrequency;
-        if (data.previousStatusText !== data.statusText) {
-          if (emailNotificationsEnabled && currentEmails.length > 0) {
-            sendEmail(data.statusText, data.statusDetails, currentEmails);
-          }
-        }
-      } catch (error) {
-        log(`Error connecting to Worker: Failed to fetch. Check Worker URL and status. (Network Error)`);
-        statusText.textContent = 'Worker Disconnected';
-        previousStatusText.textContent = 'Unknown';
-        statusText.classList.add('text-red-500');
-        stopLocalTimer();
-      }
     }
+
+    function updateToggleButton(button, isEnabled, type) {
+        button.textContent = `${isEnabled ? 'Deactivate' : 'Activate'} ${type} Alerts`;
+        button.classList.toggle('active', isEnabled);
+        button.classList.toggle('inactive', !isEnabled);
+    }
+
     async function controlWorker(action) {
-      try {
-        const response = await fetch(`${WORKER_API_URL}/control`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: action })
-        });
-        const data = await response.json();
-        log(data.message);
-        await fetchStatus();
-      } catch (error) {
-        log(`Error controlling Worker: ${error.message}`);
-      }
+        try {
+            const response = await fetch(`${WORKER_API_URL}/control`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action }) });
+            const data = await response.json();
+            log(data.message);
+            await fetchStatus();
+        } catch (error) {
+            log(`Error controlling Worker: ${error.message}`);
+        }
     }
+    
     async function saveSettings(settingsUpdate) {
-      const settings = {
-        emails: currentEmails,
-        discordWebhooks: currentWebhooks,
-        discordNotificationsEnabled: discordNotificationsEnabled,
-        emailNotificationsEnabled: emailNotificationsEnabled,
-        frequency: parseInt(frequencySlider.value),
-        ...settingsUpdate
-      };
-      try {
-        const response = await fetch(`${WORKER_API_URL}/settings`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(settings)
+        const currentSettings = {
+            emails: currentEmails,
+            discordWebhooks: currentWebhooks,
+            emailNotificationsEnabled: emailToggleButton.classList.contains('active'),
+            discordNotificationsEnabled: webhookToggleButton.classList.contains('active'),
+        };
+        try {
+            await fetch(`${WORKER_API_URL}/settings`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...currentSettings, ...settingsUpdate }) });
+            log('Settings saved.');
+            await fetchStatus();
+            return true;
+        } catch (error) {
+            log(`Error saving settings: ${error.message}`);
+            return false;
+        }
+    }
+
+    function updateListUI(listElement, noItemsMessage, items, renderItem) {
+        listElement.innerHTML = '';
+        currentEmails = items.filter(i => i); // Update global state
+        items.forEach(item => {
+            if (item) listElement.appendChild(renderItem(item));
         });
-        const data = await response.json();
-        log(data.message);
-        await fetchStatus();
-        return true;
-      } catch (error) {
-        log(`Error saving settings: ${error.message}`);
-        return false;
-      }
+        noItemsMessage.classList.toggle('show', listElement.children.length === 0);
     }
-    async function sendEmail(status, details, recipientEmails) {
-      if (!emailNotificationsEnabled) {
-        log('Email notifications disabled; skipping.');
-        return;
-      }
-      if (!recipientEmails || recipientEmails.length === 0) {
-        log('No email addresses provided for sending alerts');
-        return;
-      }
-      if (typeof emailjs === 'undefined') {
-        log('EmailJS is not available');
-        return;
-      }
-      recipientEmails.forEach(email => {
-        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-          log(`Invalid email address: ${email}. Skipping.`);
-          return;
-        }
-        emailjs.send("service_ahqdaj5", "template_whhvnra", {
-          status: status,
-          details: details,
-          timestamp: new Date().toLocaleString(),
-          to_email: email
-        }).then(
-          () => log(`Email sent successfully to ${email}`),
-          (error) => log(`Failed to send email to ${email}: ${error}`)
-        );
-      });
-      showFeedback(emailFeedback, 'Email alert sent.');
-    }
-    async function testDiscord() {
-      if (currentWebhooks.length === 0) {
-        alert('Please add at least one Discord webhook to test.');
-        return;
-      }
-      if (!discordNotificationsEnabled) {
-        alert('Please activate Discord notifications to test.');
-        return;
-      }
-      try {
-        const response = await fetch(`${WORKER_API_URL}/test_discord`, { method: 'POST' });
-        if (response.ok) {
-          log('Discord test command sent to Worker.');
-        } else {
-          throw new Error(`Worker responded with status ${response.status}`);
-        }
-      } catch (error) {
-        log(`Error sending Discord test: ${error.message}`);
-        alert('Failed to send Discord test. Check Worker console for errors.');
-      }
-    }
+    
     function updateEmailListUI(emails) {
-      submittedEmailsList.innerHTML = '';
-      emails.forEach(email => {
-        if (!email) return;
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <span>${email}</span>
-          <button type="button" class="remove-email-button bg-red-500 text-white">Remove</button>
-        `;
-        submittedEmailsList.appendChild(li);
-        const removeButton = li.querySelector('.remove-email-button');
-        removeButton.addEventListener('click', async function() {
-          currentEmails = currentEmails.filter(e => e !== email);
-          await saveSettings({ emails: currentEmails });
-          updateNoEmailsMessage();
-          showFeedback(emailFeedback, 'Email removed.');
-          log(`Email removed: ${email}`);
+        currentEmails = emails;
+        updateListUI(submittedEmailsList, noEmailsMessage, emails, email => {
+            const li = document.createElement('li');
+            li.innerHTML = `<span>${email}</span><button type="button" class="remove-email-button">Remove</button>`;
+            li.querySelector('button').addEventListener('click', () => {
+                saveSettings({ emails: currentEmails.filter(e => e !== email) });
+            });
+            return li;
         });
-      });
-      updateNoEmailsMessage();
     }
+
     function updateWebhookListUI(webhooks) {
-      submittedWebhooksList.innerHTML = '';
-      webhooks.forEach(webhook => {
-        if (!webhook) return;
-        const li = document.createElement('li');
-        const displayUrl = webhook.substring(0, 30) + '...';
-        li.innerHTML = `
-          <span>${displayUrl}</span>
-          <button type="button" class="remove-webhook-button bg-red-500 text-white">Remove</button>
-        `;
-        submittedWebhooksList.appendChild(li);
-        const removeButton = li.querySelector('.remove-webhook-button');
-        removeButton.addEventListener('click', async function() {
-          currentWebhooks = currentWebhooks.filter(w => w !== webhook);
-          await saveSettings({ discordWebhooks: currentWebhooks });
-          updateNoWebhooksMessage();
-          showFeedback(webhookFeedback, 'Webhook removed.');
-          log(`Webhook removed: ${webhook.substring(0, 30)}...`);
+        currentWebhooks = webhooks;
+        updateListUI(submittedWebhooksList, noWebhooksMessage, webhooks, webhook => {
+            const li = document.createElement('li');
+            const displayUrl = webhook.substring(0, 30) + (webhook.length > 30 ? '...' : '');
+            li.innerHTML = `<span>${displayUrl}</span><button type="button" class="remove-webhook-button">Remove</button>`;
+            li.querySelector('button').addEventListener('click', () => {
+                saveSettings({ discordWebhooks: currentWebhooks.filter(w => w !== webhook) });
+            });
+            return li;
         });
-      });
-      updateNoWebhooksMessage();
+        addPokezonanWebhookButton.classList.toggle('hidden', webhooks.includes(POKEZONAN_WEBHOOK_URL));
     }
-    document.addEventListener('DOMContentLoaded', async () => {
-      await fetchStatus();
-      setInterval(fetchStatus, 5000);
-      const initialInputGroup = emailInputsContainer.querySelector('.email-input-group');
-      const initialInput = initialInputGroup.querySelector('.email-input');
-      const submitButton = initialInputGroup.querySelector('.submit-email-button');
-      submitButton.addEventListener('click', async function() {
-        const email = initialInput.value.trim();
-        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-          alert('Please enter a valid email address.');
-          initialInput.focus();
-          return;
-        }
-        if (currentEmails.includes(email)) {
-          alert('Email already submitted.');
-          initialInput.value = '';
-          return;
-        }
-        currentEmails.push(email);
-        const success = await saveSettings({ emails: currentEmails });
-        if (success) {
-          initialInput.value = '';
-          showFeedback(emailFeedback, 'Email submitted.');
-          log(`Email submitted: ${email}`);
-        }
-      });
-      submitWebhookButton.addEventListener('click', async function() {
-        const webhook = webhookInput.value.trim();
-        if (!webhook || !webhook.startsWith('http')) {
-          alert('Please enter a valid webhook URL starting with http/https.');
-          webhookInput.focus();
-          return;
-        }
-        if (currentWebhooks.includes(webhook)) {
-          alert('Webhook already submitted.');
-          webhookInput.value = '';
-          return;
-        }
-        currentWebhooks.push(webhook);
-        const success = await saveSettings({ discordWebhooks: currentWebhooks });
-        if (success) {
-          webhookInput.value = '';
-          showFeedback(webhookFeedback, 'Webhook added.');
-          log(`Webhook added: ${webhook.substring(0, 30)}...`);
-        }
-      });
-      addPokezonanWebhookButton.addEventListener('click', async () => {
-        const defaultWebhook = POKEZONAN_WEBHOOK_URL;
-        if (currentWebhooks.includes(defaultWebhook)) {
-          alert('Pokezonan Webhook is already added.');
-          return;
-        }
-        currentWebhooks.push(defaultWebhook);
-        const success = await saveSettings({ discordWebhooks: currentWebhooks });
-        if (success) {
-          showFeedback(webhookFeedback, 'Pokezonan Webhook added!');
-          log(`Pokezonan Webhook added: ${defaultWebhook.substring(0, 30)}...`);
-        }
-      });
-      startButton.addEventListener('click', () => controlWorker('start'));
-      stopButton.addEventListener('click', () => controlWorker('stop'));
-      testButton.addEventListener('click', () => controlWorker('test_check'));
-      emailToggleButton.addEventListener('click', async () => {
-        const newState = !emailNotificationsEnabled;
-        const success = await saveSettings({ emailNotificationsEnabled: newState });
-        if (success) {
-          showFeedback(emailFeedback, `Email notifications ${newState ? 'enabled' : 'disabled'}.`);
-          log(`Email notifications ${newState ? 'enabled' : 'disabled'}.`);
-        }
-      });
-      webhookToggleButton.addEventListener('click', async () => {
-        const newState = !discordNotificationsEnabled;
-        const success = await saveSettings({ discordNotificationsEnabled: newState });
-        if (success) {
-          showFeedback(webhookFeedback, `Discord notifications ${newState ? 'enabled' : 'disabled'}.`);
-          log(`Discord notifications ${newState ? 'enabled' : 'disabled'}.`);
-        }
-      });
-      testEmailButton.addEventListener('click', () => {
-        if (!currentEmails.length || !emailNotificationsEnabled) {
-          alert('Add/Activate email alerts first.');
-          return;
-        }
-        const testStatus = '📦 ALERT: Magikarp Splash Test!';
-        const testDetails = 'The system splashed its way out of the sea to confirm email delivery. Prepare for the ultimate restock splash!';
-        log('Sending humorous test email alert...');
-        sendEmail(testStatus, testDetails, currentEmails);
-        alert('Test email(s) sent! Check your inbox(es) or spam/junk folder.');
-      });
-      testDiscordButton.addEventListener('click', testDiscord);
-      frequencySlider.addEventListener('input', function() {
-        frequencyValue.textContent = this.value;
-      });
-      frequencySlider.addEventListener('change', function() {
-        saveSettings({ frequency: parseInt(this.value) });
-        log(`Monitoring frequency setting updated to ${this.value} minutes.`);
-      });
-      autoRedirectCheckbox.addEventListener('click', () => {
-        alert("Auto-redirect is disabled when running in 24/7 serverless mode, as the check happens on the server, not in your browser. The Worker will send an immediate alert instead.");
-        autoRedirectCheckbox.checked = false;
-      });
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchStatus();
+        setInterval(fetchStatus, 5000);
+
+        document.querySelector('.submit-email-button').addEventListener('click', () => {
+            const input = document.querySelector('.email-input');
+            const email = input.value.trim();
+            if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && !currentEmails.includes(email)) {
+                saveSettings({ emails: [...currentEmails, email] });
+                input.value = '';
+            }
+        });
+        
+        submitWebhookButton.addEventListener('click', () => {
+            const webhook = webhookInput.value.trim();
+            if (webhook.startsWith('http') && !currentWebhooks.includes(webhook)) {
+                saveSettings({ discordWebhooks: [...currentWebhooks, webhook] });
+                webhookInput.value = '';
+            }
+        });
+
+        addPokezonanWebhookButton.addEventListener('click', () => {
+            if (!currentWebhooks.includes(POKEZONAN_WEBHOOK_URL)) {
+                saveSettings({ discordWebhooks: [...currentWebhooks, POKEZONAN_WEBHOOK_URL] });
+            }
+        });
+
+        startButton.addEventListener('click', () => controlWorker('start'));
+        stopButton.addEventListener('click', () => controlWorker('stop'));
+        testButton.addEventListener('click', () => controlWorker('test_check'));
+
+        emailToggleButton.addEventListener('click', () => saveSettings({ emailNotificationsEnabled: !emailToggleButton.classList.contains('active') }));
+        webhookToggleButton.addEventListener('click', () => saveSettings({ discordNotificationsEnabled: !webhookToggleButton.classList.contains('active') }));
+        
+        testDiscordButton.addEventListener('click', async () => {
+           try { await fetch(`${WORKER_API_URL}/test_discord`, { method: 'POST' }); log('Discord test sent.'); }
+           catch(e){ log('Failed to send discord test.')}
+        });
+
+        testEmailButton.addEventListener('click', () => {
+            if (currentEmails.length > 0) {
+                log('Sending test email...');
+                currentEmails.forEach(email => {
+                    emailjs.send("service_ahqdaj5", "template_whhvnra", { status: '📦 Test!', details: 'This is a test email.', to_email: email });
+                });
+            }
+        });
     });
   </script>
 </body>
